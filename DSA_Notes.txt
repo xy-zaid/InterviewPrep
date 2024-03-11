@@ -1,0 +1,78 @@
+
+
+
+Sorting 
+
+# if you increasing or decreasing in powers of 2 , it will be log N to base 2
+    64 (N) -> 32 (N/2) -> 16 (N/4) -> 8 (N/8) -> 4 (N/16) -> 2 (N/32) -> 1 (N/64)
+    64 is 2 ^6, log 8 base 2 gives 3, meaning how many times base should be multiplied with itself so that we get 8
+
+# If algo gives different Time Complexity for differnt inputs then it is input dependant(Bubble)
+    eg- best case -O(n) , worst case 0(n^2)
+
+# If algo does not give different Time Complexity for differnt inputs then it is input independent(Selection, Merge )
+    eg- best case -O(n^2) , worst case 0(n^2)
+
+    Selection Soritng - 
+
+        # Select a minimum value and swap with index whose value is less than the mnimumm
+        # Left side is sorted with each iteration. 
+        # elements are scanned and put to theor correct position at once, their posi will not change again
+
+        # Unstable sort because if duplicate values are there in the array to be sorted, then the index of the
+          first duplicate value will increase/change to more than the second duplicate value
+
+          If first duplicate value is at 3rd postion and second dup value is at 5th, then S.D.V will stay at 5th but F.D.V will be move to 6th index.
+
+        # First iteration is to access each element of the array....and 
+            for each of this iteration one more iteration will run for comparing the least value so that it can be swapped. therefore 0(n^2) for all case scenario
+
+    
+    Bubble Soritng - 
+
+        # Pair(Bubble) comparison  and swap
+        # will push the largest value to right hand side by PAIR comparison and with each iteration the unsorted array region will decrease.
+        # We are exchanging adjacent positions here based on PAIR comparison and elements can again change their position.
+
+        # Stable sort because if duplicate values are there in the array, then the index of the
+          first duplicate value will remain same. Maintains the order.
+
+          If first duplicate value is at 3rd postion and second dup value is at 5th, then S.D.V will stay at 5th and F.D.V will stay at 3rd index.
+
+        # First iteration is to access each element of the array except the last index....and 
+            for each of this iteration one more iteration will run for comparing the PAIR so that it can be swapped. therefore 0(n^2) fro worst case scenario
+
+        # But we can optimize or improve this algo by adding a swap flag after first iteration, after comparing PAIRS if swap flag is still false , it means that the array is sorted so we do not need to sort or iterate any further. this is best scenario where timecomplexity will be 0(n)
+
+    Merge Sorting -
+
+        # Follows Post Order tree traversal only conceptually , In a post-order tree traversal, you typically visit the left subtree, then the right subtree, and finally the root node.This process doesn't involve traversing a tree data structure; instead, it operates directly on arrays.
+
+        #Based on 2 different algos 
+            (a) Binary partition using recursion
+                    The array is recursively divided into into smaller subarrays untill the subarrays are of size 1 with base condition l<h
+                    we will not create a sub array, we will just change the position for low , mid and high
+                    mid= (l+h)/2
+            (b) Merge two sorted List
+                take two arrays left array and right using Arrays.copyOfRange(arr,InclusiveFrom,exclusiveTo)
+                and compare the elements of the two array and add them accordingly into the original array.
+
+        # Recursion tree
+                            N 
+                N/2                 N/2
+            N/4      N/4    N/4             N/4
+        N/N N/N  N/N  N/N  N/N N/N    N/N   N/N     **[UNTILL SIZE IS 1]
+
+        at each level we are comparing and merging the array , it is of order 0(n) at each level.
+        * adding N/2 + N/2 , ultimately we get N items to be compared, and in the same way for each level ultimately we are comparing N 
+          items only, therefore it is of 0(n) at each level.
+
+        # Height of this tree -
+
+        N->N/2->N/4->...1 therefore TC is log(N)
+
+        # N log(N) is the TC. 0(n) for merge and logn for recursion.
+        # we use Merge sort in linked list because it does not requires Random access and for array we use Quick Sort
+
+
+    
