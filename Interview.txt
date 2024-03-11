@@ -1,0 +1,655 @@
+ Interview
+
+CORE Java 
+---------
+
+Explain why it is public static void main -
+
+
+        The public access modifier indicates that the main method can be accessed from anywhere. It allows the JVM to invoke the main method.
+
+        Static modifier allows the JVM to call the main method without needing to create an object of the class.
+
+        Void return type is used because main is called by JVM and it does not have to return anything to JVM.
+
+
+---------------------------------------------------------------------------------
+
+What is the contract between hashcode() and equal() method -
+
+
+        The contract states that if two objects are equal according to the equals() method, their hash codes must also be equal. Conversely, if two objects have the same hash code, it does not necessarily mean they are equal according to the equals() method.
+
+----------------------------------------------------------------------------------
+
+Internal working of Hashmap -
+
+        HashMap in Java is a  data structure that provides a way to store key-value pairs.
+        Used for storing key-value pairs using a hashtable
+        Only unique keys are allowed
+        Hashmap doesn't guarantee the ordering of elements
+        A hashmap uses a hashtable, however, it is internally implemented using two data structures namely an array and a linked list. Whenever you declare a hashmap, internally, it will create an array of buckets. The buckets are referred to as nodes or you can say a linked list. A node can represent :
+
+        Hashcode
+        Key
+        Value
+        Address of the next node
+        
+        One thing to note here is that, the HashMap stores the object in the form of Entry Class. And that Entry class is stored in the form of a linked list. This entry class stores 4 variables, key(which user enters), Hash(That we get from applying the hashing function), value(the Value that we enter), Next(it stores the address of the next NODE,default is null)
+
+        private static class Entry<K,V> implements Map.Entry<K,V> {
+        final int hash;
+        final K key;
+        V value;
+        Entry<K,V> next;
+
+        1. Adding Data
+
+        To add data in a HashMap, we use the put() method.
+        `public V put(K key, V value) {…}`
+
+        What it’s saying is, to add data in form of key value pair. If there’s no value present for that key, this method will return null(The first time you get null because there is no value already associated with the key in the map). And if we PUT a duplicate key , it will return the old value and update the new value.
+        Step 1: First check if key is null or not. If it’s null, don’t take the hash of the key as it will produce an error and instead take the Value and insert at 0th index of the array, Only one object can be stored at the 0th index.
+        If the key is not null, then take the hash of the key through the hash method.
+
+        Step 2: Now this hash will be a long digit integer. The array size cannot be this huge. The default array size is 16. And it grows exponentially in the power of 2. So what we do is, we take the hash and the array size and through some algorithm, produce an index within the range of the size of the array.
+        with this index, the Value is stored in the form of node at the produced index position.
+
+        2. Retrieving Data
+
+        `public V get(K)`
+
+        Step 1: Check if the key is null or not. If the key is null, then return the value kept at the 0th index of the array.
+        Step 2: If the key is not null, take the key and calculate the hash value using hashing function. with this hash value we can run some algo through which we will get an index. and then using the index we check if the key and hashcode are matching with the Entry object in the Node of the Index.
+
+        Step 3: If we find the value, we return it or else we return null.
+
+        3. Collision 
+
+         As we know that two unequal objects can have the same hash code value, Due to the finite size of the array, it is possible for two or more keys to generate the same hash code, causing collisions. To handle collisions, the HashMap uses separate chaining. 
+         Each array index contains a linked list (also known as a bucket,Node), and multiple key-value pairs with the same hash code are stored in the form of linked list.A new node is appended to the linked list. And the previous Node stores the address of this new Node.
+        
+        Initial capacity is the array size(16). And it grows in the power of 2.
+
+        Load Factor is the value that determines at which point the array needs to be resized. The default value is 0.75. This means if the array has been filled upto INITIAL_CAPACITY*LoadFactor(12), the array is resized and then it becomes of 32 in length (16*2). And that keeps on repeating.
+
+        As of java 8, when the Entries in a linked list reaches 8 (MIN_TREEIFY_CAPACITY;), it converts the linked list to a Balanced Tree . This improved the performance a million times.
+
+-----------------------------------------------------------------------------------
+
+Comparable vs Comparator - 
+
+        Let us take any Object of Collection of any type whether that be our own custom type. We require to Sort them from time to time. we can sort them using Collections.sort() method. Syntax of this method is : 
+        public static <T extends Comparable<? super T>> void sort(List list){}
+        according to this syntax we now know that to use the sort method our class has to implement Comparable Interface.
+        Comparable is an interface that is used for default/natural sorting order, it has one compareTo() method.
+        Consider a Movie class that has members like, rating, name, year. Suppose we wish to sort a list of Movies based on year of release. We can implement the Comparable interface with the Movie class, and we override the method compareTo() of Comparable interface. 
+
+        Now, suppose we want to sort movies by their rating and names as well. This cannot be done by the help of Comparable Interface.
+        Unlike Comparable, Comparator is external to the element type we are comparing. It’s a separate class. We create multiple separate classes (that implement Comparator) to compare by different members.
+        Collections class has a second sort() method and it takes Comparator. The sort() method invokes the compare() to sort objects.
+        public static <T> void sort(List<T> list, Comparator<? super T> c){}
+        Comparator is a Functional Interface used for custom sorting order. Consisting of one abstract method compare() and one overriden method equals().
+        how to work with Comparator ->
+        Create a class that implements Comparator (and thus the compare() method that does the work previously done by compareTo()).
+        Make an instance of the Comparator class.
+        Call the overloaded sort() method, giving it both the list and the instance of the class that implements Comparator.
+
+        we can also use lambda expression which is very easy to use and is a replacment of implementation of  multiple comparator classes
+        Comparator<Employee> comparator = (first, second) -> first.doj.getYear() - second.doj.getYear();
+
+        A basic differentiating feature is that using comparable we can use only one comparison. Whereas, we can write more than one custom comparators as you want for a given type, all using different interpretations of what sorting means. Like in the comparable example we could just sort by only one attribute, i.e., year but in the comparator, we were able to use different attributes like rating, name, and year as well.
+
+-----------------------------------------------------------------------------------
+
+Difference between string, string buffer and string builder -
+
+        String is immutable, optimized for situations where the value does not change frequently. 
+        Once we create a String object we can't perform any changes in the existing object. If we are try to
+        perform any changes with those changes a new object will be created. This behavior is called
+         immutability of the String object 
+
+        StringBuffer is mutable, designed for efficient string manipulation, and provides synchronization for thread-safe access in multi-threaded environments. 
+        
+        If you need a mutable string and thread safety is not a concern, StringBuilder (similar to StringBuffer but without synchronization) can be used for better performance in single-threaded scenarios.
+
+----------------------------------------------------------------------------------
+
+What is SCP - 
+
+        The String constant pool, also known as the String pool, is a special area of memory in the Java heap memory that stores a pool of unique String objects. It is an optimization technique used by the Java Virtual Machine (JVM) to conserve memory and improve performance when dealing with String literals.
+        In Java, String literals (e.g., "hello", "world") are automatically stored in the String constant pool. When a new String literal is encountered, the JVM checks if an identical String already exists in the pool. If it does, a reference to the existing String object is returned. If not, a new String object is created and added to the pool for future reuse.
+
+----------------------------------------------------------------------------------
+
+Difference between DEEP Copy and SHALLOW Copy -
+
+        The process of creating exactly duplicate object is called cloning.The main objective of cloning is to maintain backup purposes.
+        An object is said to be Cloneable if and only if the corresponding class implements Cloneable interface.
+        Cloneable interface present in java.lang package and does not contain any methods. It is a marker interface where the required ability will be provided automatically by the JVM.
+
+        The process of Creating a new reference that points to the same memory location is called SHALLOW Cloning. If the main object contain any primitive variables then exactly duplicate copies will be created in cloned object.
+        If the main object contain any reference variable then the corresponding object won't be created just reference variable will be created by pointing to old contained object.
+        By using main object reference if we perform any change to the contained object then those changes will be reflected automatically to the cloned object. 
+        SHALLOW cloning is the best choice , if the Object contains only primitive values. 
+        Example:
+        Test t1=new Test();
+        Test t2=t1; Both t2 and t1 object will point to the same memory location.
+
+        To overcome this problem we should go for DEEP cloning.
+
+        The process of creating exactly independent duplicate object is called deep cloning.
+        In Deep cloning , if main object contain any reference variable then the corresponding Object copy will also be created in cloned object.
+        Object class clone( ) method default implementation meant for Shallow Cloning , if we want Deep cloning then the programmer is responsible to implement by overriding clone( ) method.
+        
+        Which cloning is best ?
+        If the Object contain only primitive variable then Shallow Cloning is the best choice ,
+        If the Object contain reference variables then Deep cloning is the best choice.
+
+-----------------------------------------------------------------------------------
+Difference between equal method and == double equal operator - 
+
+        == (double equal operator) 
+        1. It is an operator applicable for both primitives and object references.
+
+        2. In the case of primitives == (double equal operator) meant for content comparison, but
+           in the case of object references == operator meant for reference comparison.
+
+        3. We can't override== operator for content comparison in object references.
+        
+        4. If there is no relationship between argument types then we will get compile time error saying incompatible types.
+
+        5. For any object reference r, r==null is always false.
+
+        .equals() method
+        1. It is a method applicable only for object references but not for primitives.
+        
+        2. By default .equals() method present in object class is also meant for reference comparison.
+
+        3. We can override .equals() method for content comparison.(overrided in wrapper, string and collection classes)
+
+        4.If there is no relationship between argument types then .equals() method simply returns false and we won't get any compile time error and runtime error.
+
+        5. For any object reference r, r.equals(null) is also returns false.
+
+------------------------------------------------------------------------------------
+
+What is an Interface -
+
+        An interface in Java can be thought of as a contract or a set of rules that a class must follow. It defines a list of methods that a class implementing the interface must provide, without specifying how those methods should be implemented.
+
+        Imagine you have a group of people, and you want them to perform certain actions, such as singing, dancing, or playing an instrument. The actions they perform are defined by an interface. The interface lists all the actions that need to be performed, but it doesn't dictate how each person should perform those actions.
+
+        In the context of Java programming, an interface acts as a blueprint for a class. It declares the methods that a class should have, and any class implementing that interface must provide implementations for those methods. Think of it as a way to ensure that different classes follow a common set of rules or have certain behaviors.
+
+-----------------------------------------------------------------------------------------
+
+Difference between abstract class and interface -
+
+        A class can extend only one abstract class, as Java does not support multiple inheritance of classes. But we can implement multiple Interfaces.
+
+        Abstract classes can have access modifiers such as public, protected, and private for their methods and properties, while interfaces can only have public access.
+
+        Abstract class can have final, non-final, static and non-static variables. The interface has only static and final variables.
+
+        An abstract class is a class that may contain both abstract and non-abstract methods. It can have instance variables, constructors, and defined methods.
+        it can provide a default implementation for some or all of its methods.
+        Abstract classes are typically used when there is a common set of behavior among classes, and there is a need for inheritance and code reuse.
+
+        Interface: Interfaces cannot have constructors. 
+
+------------------------------------------------------------------------------------------
+
+what is garbage collector in java -
+
+        In old languages like C++ programmer is responsible for both creation and destruction of objects. Usually programmer is taking very much care while creating object and neglect destruction of useless objects .Due to his negligence at certain point of time for creation of new object sufficient memory may not be available and entire application may be crashed due to memory problems.
+        But in java programmer is responsible only for creation of new object and is not responsible for destruction of objects.
+        Sun people provided one assistant which is always running in the background for destruction at useless objects. Due to this assistant the chance of failing java program is very rare because of memory problems.
+        This assistant is nothing but garbage collector. Hence the main objective of GC is to destroy useless objects.
+
+
+--------------------------------------------------------------------------------------
+
+ how to execute garbage collector -
+
+        The following are various ways for requesting jvm to run GC:
+
+        SYSTEM class - System class has a static method gc() 
+        System.gc();
+
+        RUNTIME class - it has an instance method gc(), 
+        we get runtime object through getRuntime() and then call gc() instance method
+        Runtime.getRuntime().gc();
+
+-----------------------------------------------------------------------------------------
+
+What is finalize() method -
+
+        finalize() method is a special method defined in the Object class that is called by the garbage collector before an object is destroyed.
+        Just before destroying any object gc always calls finalize() method to perform cleanup activities.
+        If the corresponding class contains finalize() method then it will be executed otherwise Object class finalize() method will be executed.
+        finalize() method can be called either by the programmer or by the GC .
+
+
+---------------------------------------------------------------------------------------
+
+What is serialization - 
+
+        Process of converting an object from java supported format to network/file format
+        example - big balloon is shipped by removing the gas inside it.
+
+--------------------------------------------------------------------------------------
+
+Why we use it ? - 
+
+        This is particularly useful when you want to save the state of an object to a file, send it over the network, or store it in a database. Java provides built-in support for serialization using the java.io.Serializable interface.
+
+--------------------------------------------------------------------------------------
+
+What is @SerializedName command -
+
+        The @SerializedName annotation allows you to specify custom names for fields when serializing or deserializing using Gson. By using this annotation, you can map Java class fields to specific JSON property names.
+
+---------------------------------------------------------------------------------------
+
+Difference between HashTable and HashMap -
+
+        Hashtable is synchronized, does not allow null keys or values, and offers fail-safe iterators. On the other hand, HashMap is not synchronized by default, allows null keys(only one) and values(multiple null values), and offers fail-fast iterators. If you require thread-safe operations or need to disallow null keys or values, Hashtable may be a better choice. Otherwise, HashMap is generally more commonly used due to its better performance in single-threaded scenarios.
+
+-------------------------------------------------------------------------------------
+Difference Functional Interface and Normal Interface -
+
+        # FI contains only one abstract method(SAM) unlike Normal Interface,
+        # Normal interfaces can be implemented by classes or extended by other interfaces.
+          Functional interfaces are typically used with lambda expressions
+        # Normal interfaces are used to define a contract or a set of behaviors that classes implementing the interface must adhere to. 
+
+-----------------------------------------------------------------------------------------
+Can we have a default method in Functional Interface -> Yes
+  
+-----------------------------------------------------------------------------------------
+First non repetative Character using Stream API()
+
+------------------------------------------------------------------------------------
+
+Spring and Spring boot differences -
+        
+        Spring is an application development Framework having a range of features and modules.
+        Spring Framework requires explicit configuration through XML or Java-based configurations.
+        Dependency management is typically managed by the developer, configuring and resolving dependencies manually.
+
+        Spring Boot is an opinionated framework built on top of the Spring Framework.
+        It promotes convention-over-configuration, allowing developers to quickly create stand-alone, production-ready Spring-based applications with minimal manual configuration. Spring Boot provides auto-configuration, embedded application servers (Tomcat, Jetty, Undertow), production-ready metrics, health checks, and a range of starter dependencies to streamline application development. 
+        Spring Boot simplifies dependency management by providing a set of starter dependencies that include commonly used libraries
+
+        Spring Boot - Advantages
+=======================
+
+        1) Less Configuration & No Xmls Configurations
+
+        2) Pom Starters to simplify dependencies configuration
+
+        		Ex: web-starter, jpa-starter, security-starter, mail-starter
+
+        3) Auto Configuration
+
+        4) Embedded Servers (Ex: Tomcat, Jetty, Netty)
+
+        5) Actuators (Production Ready Features)
+
+
+        example - Database Configuration:
+        Spring Boot follows the convention that if it detects certain dependencies on the classpath (e.g., H2, MySQL), it automatically configures a DataSource bean and sets up a connection to the database. 
+        Web Application Configuration:
+        Spring Boot assumes that if you have certain dependencies on the classpath (e.g., Spring MVC), you are building a web application. It automatically configures an embedded servlet container (such as Tomcat or Jetty)
+        Logging Configuration:
+        Spring Boot provides default logging configuration based on the chosen logging framework (such as Logback or Log4j).
+
+---------------------------------------------------------------------------------------------------------------
+What is ControllerAdvice -
+
+        @ControllerAdvice is an annotation in Spring MVC that allows you to handle global exception for the application and is a class level annotation.
+         It contains multiple exception handler methods annotated with @ExceptionHandler.
+
+----------------------------------------------------------------------------------------------------------------
+How to make custom Immutable Objects
+
+------------------------------------------------------------------------------------------------------------------
+Difference between Authorization and Authentication -
+
+        Authorization means who are you, is the process of verifying the identity of a use.
+        Authentication on the other hand means what can you do,  is about granting appropriate access rights and permissions to authenticated users 
+
+----------------------------------------------------------------------------------------------------------------
+How do to Authorization and Authentication - 
+
+        Authentication in spring security can be provided once we decide the authentication providers to be used. like  JDBC-based authentication, LDAP, oath or custom implementations.
+
+-----------------------------------------------------------------------------------------------------------------
+Exceptions
+----------
+
+How to handle it - using try catch block 
+create custom exception - in notes
+explain try catch finally throw throws - in notes
+finally use for - cleanup activities
+try with multiple resources
+try can have multiple catches - Yes
+throw vs throws - in notes
+Types of Exceptions - checked and unchecked in notes
+File not found exception is checked or unchecked - checked exception,in notes
+what is error checked and unchecked - unchecked exceptions in notes
+Exceptions hierarchy and how to create custom exceptions in java 
+If a method throws NullPointerException in the superclass, can we override it with a method that throws RuntimeException?
+One more tricky Java question from the overloading and overriding concept. The answer is you can very well throw superclass of RuntimeException in overridden method, but you can not do the same if it's checked Exception. See Rules of method overriding in Java for more details.
+
+---------------------------------------------------------------------------------------------------------------
+
+Multi Threading 
+---------
+What is Advantages
+How to implement
+best way to implement thread
+life cycle method
+wait vs sleep
+what is dead lock how to resolve this
+what is thread synchronization
+what is thread lock
+write code for Concurrent thread execution
+what is Notify and notifyall
+Diff between Notify & Notify All
+Thread, Callable
+How synchronization works
+Thread life cycle
+Reflections in java
+runable and callable  
+executor service 
+syncronization
+What is yield() in multithreading
+What is transient variable
+Java Dead lock ...asked in one recent interview
+Comparable, Runnable Interface
+
+Hibernate
+=====================================
+Caching
+which annotations you have used in spring or hibernate
+
+
+
+DB
+=====================================
+Query
+Indexes why we use
+How u r connecting to db
+How u r taking backup of data
+Indexing
+Triggers
+Views
+Removing referenced element from table without removing child elements
+Cascading
+Clustured/Unclustured Index
+Difference in drop, truncate... in sql
+How to copy one table into another
+What is put and patch mappings
+How do you handle session 
+Different types of Scope
+Concat with 2 Columns
+Need of Index
+JDBC is faster or Hibernate
+Spring JDBC
+Mutilple connections in JDBC
+Inner Join and left Join
+
+
+Spring
+=====================================
+Purpose of Maven & uses
+Diff between Group Id & Artifact Id
+Dependencies in Central / local Id
+Purpose of JSP Servlets
+Tomcat Related questions
+How IOC container works in spring
+DI container 
+beans scpoe 
+Actuator
+Spring profiles
+Endpoint naming convention REST
+Integration - never used it.
+
+
+
+Microservices
+=====================================
+Microsoft services architecture
+Cross origin
+API gateways questions
+Circuit Breaker
+Transaction in microservices
+
+
+
+
+Singleton
+how to make class singleton
+Bean scopes
+What is default bean scope
+How synchronization managed with singleton beans
+
+
+Collection Framework 
+------
+
+Difference in list and set
+what is map
+How Hashmap works
+arraylist vs vector vs linkedlist
+what is best for Retrieving insert amd delete at middle for search which is best.
+who is faster if frequent operation is search in arraylist vs linkedlistand explain
+what is set
+internal working of hash set and hash map 
+Linked hashed map
+Concurrent hashed map
+employee object we can store as key in hashmap, hashmap change in java 8.
+Which one is better hashmap or hastable
+or hash map 
+Ye bht puchta hai
+Leetcode k problem bhi
+Or how u can implement your hashmap
+Difference between iterator and enumeration in java
+What is equals and hashcode in hashmap
+Usne sirf linked list pucha
+Insert delete
+How to do that
+
+Java 8
+Stream filter map
+Optional in java
+
+Static constructor
+What is the purpose of static
+When do we go for static 
+static keyword use
+Instance of abstract class and concrete method
+
+What is Interceptor
+How many types of injections & Uses
+What is an index
+Joining & Aggregation
+
+Design Pattern (Template)
+design principle(solid, open close)
+design patterns
+Design patterns with examples that you have worked upon
+explain string class, immutable, mutable, more immutable classes
+Final keyword / Static Keyword
+Super class / Follow class
+memory allocation
+Explain memory area
+Memory handled in Java 
+Driver memory
+
+Can we make constructor final - Yes
+Can we overload main method - Yes
+Can we change return type in method overloading - NO 
+Different access modifier in java
+
+Experaiting the process
+Current Architecture and Usages in your project
+Can we make a class private or protected??
+Answer no  - https://youtu.be/OGM_I5G_bRQ
+
+Program we need to write :
+How to make class immutable Like string
+How u will override the equals method of Object cls in your cls
+Sort linked list in reverse order
+U have a 2d array
+Whenever u find 0
+Make that row Nd column 0 (Given a two-dimensional array, if any element within is zero, make its whole row and column zero.)
+* 2 array sorted how to create 3 arrays assorted.
+* remove duplicate employee from list of employee
+* which character is repeated within string and how many times
+Immutable custom objects with date
+Stream API group by
+
+
+
+8. 
+
+Read more: https://www.java67.com/2012/09/top-10-tricky-java-interview-questions-answers.html#ixzz76K0buAcL
+
+Question . what is the output ?
+
+Map<String,Integer> aMap= new HashMap<>();
+String a ="blumeglobal";
+String b = new String ("blumeglobal");
+aMap.put(a,14);
+aMap.put(b,12);
+
+System.out.println(aMap.get("blumeglobal")); //12  
+System.out.println(aMap.get(new String ("blumeglobal")));  //12
+System.out.println(aMap.get(b)); //12
+System.out.println(aMap.get(a)); //12
+
+
+
+Q. What is the output of the given Java code?
+public class Test {
+
+public static void main(String[] args) {
+method(null);
+}
+
+public static void method(Object o) {
+System.out.println("Object method");
+}
+
+public static void method(String s) {
+System.out.println("String method"); 
+}
+}
+
+
+
+Count Leaves in Binary Tree
+1->2 , 1->3
+
+
+Find frequencies of numbers in array
+
+a  = 2,3,5,6,2,3,2
+
+
+public static Map<Integer, Integer> getRepetedIntergerCount(List<Integer> list){
+
+Map<Integer, Integer> intCount = new HashMap();
+
+for(int i =0; i <list.size(); i++){
+
+if(intCount.containsKey(list[i])){
+intCount.add(list[i], intCount.get(list[i])+1);
+}
+else{
+intCount.add(list[i], 1);
+}
+
+return intCount;
+
+}
+
+[15:27] Kishan Jha (Guest)
+
+
+
+
+    Q. Merge two sorted linked lists
+
+a =     1->4->6->9->null
+
+ b =    2->3->5->7->8->11->null
+
+List<> c = new ArrayList<>(a);
+
+c.addAll(b);  
+
+for()
+
+Find second largest number in an array 
+8, 5, 10, 20, 7, 20, 9
+
+int min , max, secondLarge ;
+
+max = list[0]; //8
+
+
+for(int i =1; i <list.size(); i++){
+
+if(list[i] >  max  ){
+max = list[i];
+}
+
+
+// somthing < max 
+if(min > list[i]){
+min = list[i];
+max = min;
+}else{
+min = max;
+max =  list[i];
+}]
+
+}
+
+Blume Global 
+they asked all codeing question only
+
+Dare2Compete: Top 101 Java Interview Questions And Answers That IT Companies Ask!.
+https://dare2compete.com/blog/java-interview-questions
+
+https://www.linkedin.com/posts/saloni-jain-178107246_dont-waste-time-in-remembering-company-names-activity-7020810050306719745-W0PF?utm_source=share&utm_medium=member_android
+
+Encryption dicription how it works in java
+
+
+Questions:
+What is aggregate and composite function in java
+
+
+
+Front End 
+Dollar Symbol in jQuery
+Normal Js and Mini File of Js
+JQuery Filter
+Pop and attribute methods 
+Session and cookies in Nodejs
+Javascript questions
+Diff between Ajax and Nodejs
+Cluster in Nodejs
+Authentication and application difference
+Building datamarts - load 
+Data warehouses 
+Create Table Tag
+Attributes in HTML
+Creation of things in HTML
+Main diff between restful and Soap services
+Common Problem in Scalability
