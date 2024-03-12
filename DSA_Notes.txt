@@ -74,5 +74,23 @@ Sorting
         # N log(N) is the TC. 0(n) for merge and logn for recursion.
         # we use Merge sort in linked list because it does not requires Random access and for array we use Quick Sort
 
+    Quick Sorting - 
+
+        #First Select A pivot , either the first element of array, last element , median or random element.
+
+        # Partition the pivot element using 2 pointers and store at an index and this index will be its correct postion according to the given order. We will not have to touch this element ever, so that all elements that are smaller will be at the left side and all larger elements will be at right side. 
+        (these first 2 steps are to be taken care by a different method and while loop and return the pivot index)
+
+        # inside Partition method we check using 2 pointers if there is any value which is greater and smaller from both polar ends and swap them untill 1st pointer crosses the second pointer which means that all values to left of that index is small, so we swap that index with the pivot value and return the index.
+
+        ----------------------------------------------------------------------------
+
+        # recursively call the left and right side of the pivot element and again partition it so that left side will be smaller and right side will be larger.
+
+
+        # merge sort and quick sort both have same time complexity but Space complexity of MS is 0(n) and of QS is 0(1)
+        # best and avg = 0(nlogN) , worst case = 0(N^2)
+
+
 
     
