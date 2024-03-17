@@ -53,7 +53,7 @@ Sorting
         # First iteration is to access each element of the array except the last index....and 
             for each of this iteration one more iteration will run for comparing the PAIR so that it can be swapped. therefore 0(n^2) fro worst case scenario
 
-        # But we can optimize or improve this algo by adding a swap flag after first iteration, after comparing PAIRS if swap flag is still false , it means that the array is sorted so we do not need to sort or iterate any further. this is best scenario where timecomplexity will be 0(n)
+        # But we can optimize or improve this algo by adding a swap flag after first iteration, after comparing PAIRS if swap flag is still false , it means that the array is sorted so we do not need to sort or traverse any further. this is best scenario where timecomplexity will be 0(n)
 
     --------------------------------------------------
 
@@ -114,13 +114,13 @@ Arrays
      
      # Largest Element in an Array
         
-       * Either use Arrays.stream or iterate over the array "max = Math.max(max, arr[i])"
+       * Either use Arrays.stream or traverse over the array "max = Math.max(max, arr[i])"
 
      ------------------------
 
      # Second Largest Element in an Array 
 
-        * iterate over the array, any number that is closest to the largest number is the number that was there before the new larger value is assigned to the max variable. therefore before adding the new larger value take the value that is to be removed and store in second largest.
+        * traverse over the array, any number that is closest to the largest number is the number that was there before the new larger value is assigned to the max variable. therefore before adding the new larger value take the value that is to be removed and store in second largest.
         for example we are iterating an array [1234] around last iteration largest varibale will store 3 inside but when the condition -> arr[i] > large is satisfied , 4 will be added to it. therefore before "large = arr[i]" do this -> " second_large = large "
         
         second condition is when we have such an array -> 23915 , In this case we can see that 5 will come at the last iteration , so if we only use the first condition then we will not satisfy it and we will not get the correct second_large value.
@@ -132,7 +132,7 @@ Arrays
 
         * array is sorted in ascending order if current element is smaller than the preceding element.
         this will be our base condition , if this is not satisfied return false.
-        if(curr>precedingElement)  this was we dont have to iterate over n times. the moent we knoe the array is unsorted, we break out and optimize our code.
+        if(currElement>precedingElement) is satisfied then we dont have to traverse over n times. we know the array is unsorted, we break out and optimize our code.
 
     ------------------------------
 
@@ -146,7 +146,7 @@ Arrays
         * Brute force approach would be to use set data structure, so that no duplicates will be saved and we will get our noDuplicateArray . this requires two loops. so 0(n) +0(n) and space will be 0(n)
 
         * we can also do this in 0(n) and 0(1) space complexity by using 2 Pointer technique. The slow and fast 2 pointer approach will work fine here, 
-        1st pointer will be duplicatePointer which will continuously iterate over the array.
+        1st pointer will be duplicatePointer which will continuously traverse over the array.
         2nd pointer will be nonDuplicatePointer.
 
         we will compare the two pointers -> " arr[duplicatePointer] != arr[nonDuplicatePointer] "
@@ -167,7 +167,68 @@ Arrays
 
     # Left rotate an array by D places
 
+        * From {1,2,3,4,5,6,7} to -> 3,4,5,6,7,1,2  if d=2. then we have to rotate the array to left by 2 places.
+
+        if d=greater than n, d=14 then how many times should we rotate. obviously not 14 times.
+        becasue the array after rotating 14 times will end up the same, so this will increasethe complexity.
+        what is 14%7 0, thats exactly how many times we should rotate. if d= 16 then we should rotate 16%7= 2
+        so before any operation we have to reassign the d places value to optimize our solution
+        d=d%arr.length;
+
+        The pattern we can see is that from 0th index to d-1 index(0,1) and dth index to n-1(3,4,5,6,7) index are two different parts.
+        
+        * First approach is to store these two parts in 2 different tmp array and then storing back to the original array.
+        eg , here d=2, therefore in temp array we will store the second part i.e 3,4,5,6,7 at the start. 
+            and after this we will store the first part of array 1,2.
+            then we can store the values of our temp array into our original array  "arr[i] = temp[i]"
+            
+            time complexity of this approach is 0(n) but space complexity is 0(n)
+
+        * Second aproach improves the space complexity to 0(1) 
+        we an see an amazing pattern here. If we reverse the two parts and then reverse the whole array, we get our desired result
+        1,2,3,4,5,6,7-> 12 and 34567 , lets rev both these two parts of the given array, 21 and 76543
+        now lets see how they will look in array 2,1,7,6,5,4,3 
+        lets reverse the whole array now 2,1,7,6,5,4,3 ->3,4,5,6,7,1,2 . we got the desired result.
+
+        " // Reverse first elements from 0th to d-1
+            Reverse(arr, 0, d-1);
+          // Reverse last elements from dth to n-1
+            Reverse(arr, d, n - 1);
+          // Reverse whole array
+            Reverse(arr, 0, n - 1); "
+
+    ------------------------------------------------------
+
+    # Move all Zeros to the end of the array
+    <<<<< Input: 1 ,0 ,2 ,3 ,0 ,4 ,0 ,1 Output: 1 ,2 ,3 ,4 ,1 ,0 ,0 ,0 >>>>>>>
+
+        * Move all non zero values to the start. 
+
+         we will use 2 Pointer slow and fast approach. 
+         wherein first pointer i, which will be used to traverse the elements of the array and the second pointer j will store the index of FIRST ZERO ELEMENT. So we will assume that there is no zero element in the array therefore j=-1 at the start.
+
+         we will traverse the array non stop exceptat the condition that the element at ith index is found to be non zero , so we will shhift that non zero element to the start.
+
+         while iterating the array if this condition -> "if(arr[i]!=0)" i.e. element is non zero is satisfied then we will swap j and i index but before that we will increment j Pointer. 
+
+        * 0(n) 
+
+    ------------------------------------------------------------
+
+    # Linear Search
+    <<<<< Input: arr[]= 1 2 3 4 5, num = 3 Output: 2 >>>>>>>
+
+        * We will traverse the whole array and see if the element is present in the array or not and return the element if it is found
+
+    ------------------------------------------------------------
+
+    # Union of Two Sorted Arrays 
+    <<<<< Input: n = 5,m = 5. arr1[] = {1,2,3,4,5}  arr2[] = {2,3,4,4,5}    Output: {1,2,3,4,5} >>>>>>>
+
         * 
+         
+
+
 
 
 
