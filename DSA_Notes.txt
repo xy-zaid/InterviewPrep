@@ -75,7 +75,87 @@ Bit Manipulation
           } else the ith positionindex is -> 1
       2. num | (1 << (i - 1)) to set at the ith position
       3. num &  ~(1 << (i - 1)) to clear set at the its posi
+    
+    _______________________________________
+
+    2. " Given a number ‘N’ and a number ‘K’. Return true if ‘K’th bit of number is set, else return false. "
+
+      sol -> using bit masking and '&' operator
+        "  return (integer & (1 << (position - 1))) != 0; "
+
+    ------------------------------------------
+
+    3. Check if a number is odd or not
+
+      sol -> binary representation of 5 is 101 and of 4 is 100
+        101 -> (1 * 2^2) + (0 * 2^1) + (1 * 2^0) = 5 and 100 -> (1 * 2^2) + (0 * 2^1) + (0 * 2^0) = 4
+        therefore for every odd number least significant bit[LSB] has to be 1 because that is the only bit digit that adds 1,
+        so if lsb is 1 then integer is ODD otherwise EVEN.
+        " (integer & 1)==0 "
+
+    ------------------------------------------
       
+
+    4. Check if a number is power of 2 or not
+
+      sol -> binary representation of every power of 2 is as follows :
+       2->10 , 4->100 , 8-> 1000 , 16-> 10000 
+       and every integer just before the power of 2 is as follows : 
+       1->1 , 3->11 , 7->111 , 15->1111 , 31->11111 
+       " ( n & ( n - 1 ) ) " if this expression gives 0 , then integer is a power of 2.
+
+    ------------------------------------------
+      
+
+    5. Count the number of set bits
+
+      sol ->
+
+    ------------------------------------------
+      
+    
+    n. " "
+
+      sol ->
+
+    ------------------------------------------
+      
+    
+    n. " "
+
+      sol ->
+
+    ------------------------------------------
+      
+    
+    n. " "
+
+      sol ->
+
+    ------------------------------------------
+      
+    
+    n. " "
+
+      sol ->
+
+    ------------------------------------------
+      
+    
+    n. " "
+
+      sol ->
+
+    ------------------------------------------
+      
+    
+    n. " "
+
+      sol ->
+
+    ------------------------------------------
+      
+  
 
 
 Sorting 
