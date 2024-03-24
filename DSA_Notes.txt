@@ -8,20 +8,89 @@ https://algodaily.com/lessons/using-the-two-pointer-technique/java
 
 -------------------------------------------------------------------------------
 
+Bit Manipulation 
+
+  1. Basics of Bits 
+
+   1.1 Binary Representation
+      In computers, data is represented in binary format, consisting of only two digits: 0 and 1.
+      Each binary digit is called a bit, which is the smallest unit of data storage.
+      For example, the decimal number 5 is represented as 101 in binary, where each digit (1 or 0 or 1) is called a bit and represents a power of 2:
+      1 * 2^2 + 0 * 2^1 + 1 * 2^0 = 5
+
+  ------------------------------
+
+  2. Bitwise Operators : Bitwise operators manipulate individual bits of binary numbers.
+  
+   2.1 Common Bitwise Operators in Java
+    
+    Bitwise AND (&):
+    Performs a bitwise AND operation between corresponding bits of two operands.
+    Result is 1 if both bits are 1, otherwise 0.
+
+    Bitwise OR (|):
+    Performs a bitwise OR operation between corresponding bits of two operands.
+    Result is 1 if at least one of the bits is 1, otherwise 0.
+
+    Bitwise XOR (^):
+    Performs a bitwise XOR (exclusive OR) operation between corresponding bits of two operands.
+    Result is 1 if the bits are different, otherwise 0.
+
+    Bitwise NOT (~):
+    Inverts all bits of a single operand.
+    Changes 0 to 1 and 1 to 0.
+    Binary representation of 5 -> 0000 0101.
+    Applying the ~ operator to each bit of 0000 0101, we get -> 1111 1010.
+
+    Left Shift (<<) Operator :
+    The left shift operator (<<) shifts all bits in a binary number to the left by a specified number of positions.
+    Syntax: num << n, where num is the value to be shifted, and n is the number of positions to shift.
+    eg -> 5 << 2 will shift the bits two positions to the left,binary representation of 5 is 0000 0101 resulting in 0001 0100, which equals 20 in decimal.
+
+    Right Shift (>>) Operator :
+    The right shift operator (>>) shifts all bits in a binary number to the right by a specified number of positions.
+    Syntax: num >> n, where num is the value to be shifted, and n is the number of positions to shift.
+    eg -> 5 >> 1 will shift the bits one position to the right, resulting in 0000 0010, which equals 2 in decimal.
+
+   2.2 Examples of Bitwise Operations
+    Bitwise AND (&): 5 & 3 equals 1, because 0101 & 0011 = 0001.
+    Bitwise OR (|):5 | 3 equals 7, because 0101 | 0011 = 0111.
+    Bitwise XOR (^):5 ^ 3 equals 6, because 0101 ^ 0011 = 0110.
+    Bitwise NOT (~):~5 equals -6 (in two's complement).
+  
+  --------------------------------------------
+
+  Problems :
+
+    1. " You have a 32-bit unsigned integer called 'num' and another integer called 'i'. 
+      You need to perform the following operations on the 'num' integer based on the value of 'i':
+      1. Get the bit value at the "i"th position of "num".
+      2. Set the bit at the "i"th position of "num".( set bit meaning bit digit should be 1)
+      3. Clear the bit at the "i"th position of "num".( changing the bit digit to 0)
+
+     solution -> [1 << n] this is called bit masking.
+
+      1. if ((num & (1 << (ith position - 1))) == 0) {
+          the ith positionindex is -> 0
+          } else the ith positionindex is -> 1
+      2. num | (1 << (i - 1)) to set at the ith position
+      3. num &  ~(1 << (i - 1)) to clear set at the its posi
+      
+
 
 Sorting 
 
-# if you increasing or decreasing in powers of 2 , it will be log N to base 2
+  # if you increasing or decreasing in powers of 2 , it will be log N to base 2
     64 (N) -> 32 (N/2) -> 16 (N/4) -> 8 (N/8) -> 4 (N/16) -> 2 (N/32) -> 1 (N/64)
     64 is 2 ^6, log 8 base 2 gives 3, meaning how many times base should be multiplied with itself so that we get 8
 
-# If algo gives different Time Complexity for differnt inputs then it is input dependant(Bubble)
+  # If algo gives different Time Complexity for differnt inputs then it is input dependant(Bubble)
     eg- best case -O(n) , worst case 0(n^2)
 
-# If algo does not give different Time Complexity for differnt inputs then it is input independent(Selection, Merge )
+  # If algo does not give different Time Complexity for differnt inputs then it is input independent(Selection, Merge )
     eg- best case -O(n^2) , worst case 0(n^2)
 
- ------
+  ---------------------------------------
 
     Selection Soritng - 
 
@@ -116,7 +185,7 @@ Arrays
         
        * Either use Arrays.stream or traverse over the array "max = Math.max(max, arr[i])"
 
-     ------------------------
+      ------------------------
 
      # Second Largest Element in an Array 
 
@@ -126,7 +195,7 @@ Arrays
         second condition is when we have such an array -> 23915 , In this case we can see that 5 will come at the last iteration , so if we only use the first condition then we will not satisfy it and we will not get the correct second_large value.
         "arr[i] > second_large && arr[i] != large" this should be your second condition where it checks if the current value is gt second_large if true then check if thet value is large value or not, if satisfied then second_large = arr[i]. 0(n).
 
-    --------------------------
+      --------------------------
 
      # Check if the array is sorted 
 
@@ -134,13 +203,13 @@ Arrays
         this will be our base condition , if this is not satisfied return false.
         if(currElement>precedingElement) is satisfied then we dont have to traverse over n times. we know the array is unsorted, we break out and optimize our code.
 
-    ------------------------------
+      ------------------------------
 
      # Remove duplicates from Sorted array
        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     (Given an integer array sorted in non-decreasing order, remove the duplicates in place such that each unique element appears only once. The relative order of the elements should be kept the same. 
-     If there are k elements after removing the duplicates, then the first k elements of the array should hold the final result. It does not matter what you leave beyond the first k elements.
-     Return k after placing the final result in the first k slots of the array.)
+      (Given an integer array sorted in non-decreasing order, remove the duplicates in place such that each unique element appears only once. The relative order of the elements should be kept the same. 
+      If there are k elements after removing the duplicates, then the first k elements of the array should hold the final result. It does not matter what you leave beyond the first k elements.
+      Return k after placing the final result in the first k slots of the array.)
       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         * Brute force approach would be to use set data structure, so that no duplicates will be saved and we will get our noDuplicateArray . this requires two loops. so 0(n) +0(n) and space will be 0(n)
@@ -163,9 +232,9 @@ Arrays
         now the nonDuplicatePointer is pointing at the correct index, this way the relative order is also maintained. 
         " arr[nonDuplicatePointer] = arr[duplicatePointer] "
 
-    ----------------------------------------
+      ----------------------------------------
 
-    # Left rotate an array by D places
+     # Left rotate an array by D places
 
         * From {1,2,3,4,5,6,7} to -> 3,4,5,6,7,1,2  if d=2. then we have to rotate the array to left by 2 places.
 
@@ -197,10 +266,9 @@ Arrays
           // Reverse whole array
             Reverse(arr, 0, n - 1); "
 
-    ------------------------------------------------------
+      ------------------------------------------------------
 
-    # Move all Zeros to the end of the array
-    <<<<< Input: 1 ,0 ,2 ,3 ,0 ,4 ,0 ,1 Output: 1 ,2 ,3 ,4 ,1 ,0 ,0 ,0 >>>>>>>
+     # Move all Zeros to the end of the array : <<<<< Input: 1 ,0 ,2 ,3 ,0 ,4 ,0 ,1 Output: 1 ,2 ,3 ,4 ,1 ,0 ,0 ,0 >>>>>>>
 
         * Move all non zero values to the start. 
 
@@ -209,23 +277,44 @@ Arrays
 
          we will traverse the array non stop exceptat the condition that the element at ith index is found to be non zero , so we will shhift that non zero element to the start.
 
-         while iterating the array if this condition -> "if(arr[i]!=0)" i.e. element is non zero is satisfied then we will swap j and i index but before that we will increment j Pointer. 
+         while traversing the array if this condition -> "if(arr[i]!=0)" i.e. element is non zero is satisfied then we will swap j and i index but before that we will increment j Pointer. 
 
         * 0(n) 
 
-    ------------------------------------------------------------
+      ------------------------------------------------------------
 
-    # Linear Search
-    <<<<< Input: arr[]= 1 2 3 4 5, num = 3 Output: 2 >>>>>>>
+     # Linear Search : <<<<< Input: arr[]= 1 2 3 4 5, num = 3 Output: 2 >>>>>>>
 
         * We will traverse the whole array and see if the element is present in the array or not and return the element if it is found
 
-    ------------------------------------------------------------
+      ------------------------------------------------------------
 
-    # Union of Two Sorted Arrays 
-    <<<<< Input: n = 5,m = 5. arr1[] = {1,2,3,4,5}  arr2[] = {2,3,4,4,5}    Output: {1,2,3,4,5} >>>>>>>
+     # Union of Two Sorted Arrays : <<<<< Input: n = 5,m = 5. arr1[] = {1,2,3,4,5}  arr2[] = {2,3,4,4,5}    Output: {1,2,3,4,5} >>>>>
 
-        * 
+        * First approach will be to use HashMap
+         we will traverse both the array and store the elements as key and the count of that element as value inside HashMap
+         this way we can get our desired list of union of two arrays with distinct values.
+         But requirement was that the order should not be changed. but order is not maintained in HashMap, that is why we will have to use  SortedMap and since it is an interface we need to use TreeMap.
+         Time complexity increased while using TreeMap, put method for HashMap was 0(1) but now for TreeMapit hasincreased to log n
+         Inserting n elements from the arr array into the TreeMap has a time complexity of O(nlogn) because TreeMap maintains its elements in sorted order, and each insertion operation has a time complexity of O(logn).
+         therefore overall time complexity of the method, therefore, becomes O(nlogn+mlogm).
+
+        * Second Approach will be to reduce the time complexity to 0(n+m) and we will do that using 2 Pointers
+          for each array there will be a pointer for traversal i and j.
+          if ith element is smaller than j , just add that value to union array " tempArray.add(a[i]) "
+          and increment i
+          and if ith element is not smaller than j , just add jth index value value to union array " tempArray.add(b[j]) "
+          and increment j
+
+          while adding values validate if the value is already presnt or not in the list. " tempArray.contains(a[i]) "
+          if it is not present then only add values 
+
+          there will be a scenario when one array will be empty so add the second array's left element into union after validating if they're present or not.
+
+      -----------------------------------------------------------------------
+
+     # 
+
          
 
 
