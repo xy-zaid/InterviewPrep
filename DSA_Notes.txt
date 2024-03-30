@@ -57,6 +57,11 @@ Bit Manipulation
     Bitwise OR (|):5 | 3 equals 7, because 0101 | 0011 = 0111.
     Bitwise XOR (^):5 ^ 3 equals 6, because 0101 ^ 0011 = 0110.
     Bitwise NOT (~):~5 equals -6 (in two's complement).
+    Bitwise Left Shift (<<) operator: number << position means shifting the binary representation of the number to the left by positions, effectively multiplying num by 2^position.
+    eg-> 1<<2 , binary representation is from 1 to 100. and the number 1 is multiplied by 2 to the power of position[ 2^position ]
+         1 * 2^2 = 1*4 -> from 1 -> 4.
+    Bitwise Right Shift (>>) operator: number >> position means shifting the binary representation of the number to the right by positions, effectively dividing the number by 2^position.
+    eg-> 20>>2, then 20 is divided by 2^2 -> 20/2^2 = 20/4 = 5.
   
   --------------------------------------------
 
@@ -74,7 +79,7 @@ Bit Manipulation
           the ith positionindex is -> 0
           } else the ith positionindex is -> 1
       2. num | (1 << (i - 1)) to set at the ith position
-      3. num &  ~(1 << (i - 1)) to clear set at the its posi
+      3. num &  ~(1 << (i - 1)) to clear set at the ith posi
     
     _______________________________________
 
@@ -107,56 +112,66 @@ Bit Manipulation
     ------------------------------------------
       
 
-    5. Count the number of set bits
+    5. Count the number of set bits - " If 'N' is 4, then 1 has a binary representation of 1, 2 has a binary representation of 10,
+       3 has a binary representation of 11 ,4 has a binary representation of 100 -> Hence number of set bits is 5."
+     
 
-      sol ->
+      sol -> we can count sets in each number using '&' operator and bitmask -> " ((temp & (1)) != 0) " if this expression is not 0,
+        then it means the bit is '1' so we will increment the count whenever this exp is satisfied and we right-shift a number temp by one position (temp = temp >> 1) so that we can traverse over each bit of that integer, we effectively divide temp by 2. This operation continues until temp becomes 0.
+        so TC for counting sets of an integer is [logn] because we are dividing by 2.
 
-    ------------------------------------------
-      
-    
-    n. " "
-
-      sol ->
-
-    ------------------------------------------
-      
-    
-    n. " "
-
-      sol ->
+        Now Second step is that we need to traverse the integer from n to 1, we can do this by looping or through recursion.
 
     ------------------------------------------
       
     
-    n. " "
+    6.  Set The Rightmost Unset Bit - " N = 5 Output: 7
+        Explanation: The binary representation of 5 is 101. After setting the rightmost unset bit it becomes 111 which is 7. "
 
-      sol ->
+      sol -> we have two tasks here -
 
-    ------------------------------------------
-      
-    
-    n. " "
+        First one is to traverse over each bit of the given integer through loop until each bit is traversed -> " temp = temp >> 1 " , and will break the loop when this exp fails -> "  temp > 0  "or when thr rightmost '0' bit is changed to '1'
 
-      sol ->
-
-    ------------------------------------------
-      
-    
-    n. " "
-
-      sol ->
+        Second task is to validate at which index we have unset bit and we will use counter variable, we will increment the counter to store what index we are currently at, after each bit traversal we will increment it.
+        The moment we get the first '0' individual bit, meaning when this exp -> " (temp & (1)) == 0) " satifies.  
+        at that index, we will toggle the bit value to '1' " Number = Number | (1 << count - 1) " and break from the loop.
+        Tc is logn because the while loop iterates through each bit of the input integer in decreasing power of 2
 
     ------------------------------------------
       
     
-    n. " "
+    7. Swap two numbers
 
-      sol ->
+      sol -> We will use XOR property here, which states if two operand are same it will cancel each other out and provide 0
+        for eg 4^4=0 , 0^4=4 same noperands give 0 , and xor with 0 returns the same value.
+        we have to input integers a and b -> a=a^b; 
+        b=a^b -[here a  is a^b] -> b= a^b^b now as we know previously b and b will cancel each other and give 0 -> b=a^0, this will give b=a; a=a^b[ a= a^b and b = b ] therefore a= a^b^a, a will cancel each other out , hence a=b;
 
     ------------------------------------------
       
-  
+    
+    8. " You are given two integers, ‘dividend’ and ‘divisor’.
+        You are required to divide the integers without using multiplication, division, and modular operators. "
 
+      sol -> we have to use Left shift operator here, as we know left shift operator num<<posi means multiplying number by 2^posi
+        we will try to create our own multiplication table 
+        for example -> 
+        3<<0 = 3 [3 * 2^0] 
+        3<<1 = 6 [3 * 2^1] 
+        3<<2 = 12 [3 * 2^2] 
+        3<<3 = 24 [3 * 2^3] , this will be our first objective to make use of << operator and create a multiplication table when desired.
+        Now, if dividend is 10 and divisor is 3, therefore using above table we will see how which table we can use to decrease the dividendto less than divisor 3.
+        so outer loop will be to iterate until " divisor <= dividend " and inner loop will check this condition ->
+        "(dividend - (divisor << count)) >= 0" here we are iterating and validating that is there any value to be subtracted from dividend. 10-(3<<0) =10-3=7 , if this is valid then we will reduce the dividend value to 7(10-3) and again verify if 
+        7-(3<<1)=7-6 is >= 0 and this goes on and on until we are not able to reduce our dividend.
+
+        now comes the questionhow will you store quotient , so againwe will sue << operator.
+        1<<0 = 1,1<<1=2,1<<3=6
+        so quotient=quotient+(1<<count) 
+
+    ------------------------------------------
+
+======================================================================================================
 
 Sorting 
 
@@ -181,7 +196,7 @@ Sorting
         # Unstable sort because if duplicate values are there in the array to be sorted, then the index of the
           first duplicate value will increase/change to more than the second duplicate value
 
-          If first duplicate value is at 3rd postion and second dup value is at 5th, then S.D.V will stay at 5th but F.D.V will be move to 6th index.
+          If first duplicate value is at 3rd position and second dup value is at 5th, then S.D.V will stay at 5th but F.D.V will be move to 6th index.
 
         # First iteration is to access each element of the array....and 
             for each of this iteration one more iteration will run for comparing the least value so that it can be swapped. therefore 0(n^2) for all case scenario
@@ -197,7 +212,7 @@ Sorting
         # Stable sort because if duplicate values are there in the array, then the index of the
           first duplicate value will remain same. Maintains the order.
 
-          If first duplicate value is at 3rd postion and second dup value is at 5th, then S.D.V will stay at 5th and F.D.V will stay at 3rd index.
+          If first duplicate value is at 3rd position and second dup value is at 5th, then S.D.V will stay at 5th and F.D.V will stay at 3rd index.
 
         # First iteration is to access each element of the array except the last index....and 
             for each of this iteration one more iteration will run for comparing the PAIR so that it can be swapped. therefore 0(n^2) fro worst case scenario
@@ -242,7 +257,7 @@ Sorting
 
         #First Select A pivot , either the first element of array, last element , median or random element.
 
-        # Partition the pivot element using 2 pointers and store at an index and this index will be its correct postion according to the given order. We will not have to touch this element ever, so that all elements that are smaller will be at the left side and all larger elements will be at right side. 
+        # Partition the pivot element using 2 pointers and store at an index and this index will be its correct position according to the given order. We will not have to touch this element ever, so that all elements that are smaller will be at the left side and all larger elements will be at right side. 
         (these first 2 steps are to be taken care by a different method and while loop and return the pivot index)
 
         # inside Partition method we check using 2 pointers if there is any value which is greater and smaller from both polar ends and swap them untill 1st pointer crosses the second pointer which means that all values to left of that index is small, so we swap that index with the pivot value and return the index.
@@ -259,7 +274,7 @@ Sorting
 
 Arrays
 
-    Easy ->
+    Easy :
      
      # Largest Element in an Array
         
@@ -305,7 +320,7 @@ Arrays
         * if condition is false it means we are at an index where we have found a non duplicate value. so we will swap this element.
         but nonDuplicatePointer is still at 0th index, where should we store the latest non duplicate value ?
         if we remember the questionhas clearly mentioned that -> 'The relative order of the elements should be kept the same.'
-        therefore for eg 111122 in this array the realtive order is that after 1 2 is coming. so we will have to store this nonDuplicate value that is *2* at the postion after 1 -> 121122.
+        therefore for eg 111122 in this array the realtive order is that after 1 2 is coming. so we will have to store this nonDuplicate value that is *2* at the position after 1 -> 121122.
         so before storing the latest non duplicate value at nonDuplicatePointer. we should increment its index to 1st
         " nonDuplicatePointer++ "
 
@@ -319,7 +334,7 @@ Arrays
         * From {1,2,3,4,5,6,7} to -> 3,4,5,6,7,1,2  if d=2. then we have to rotate the array to left by 2 places.
 
         if d=greater than n, d=14 then how many times should we rotate. obviously not 14 times.
-        becasue the array after rotating 14 times will end up the same, so this will increasethe complexity.
+        because the array after rotating 14 times will end up the same, so this will increasethe complexity.
         what is 14%7 0, thats exactly how many times we should rotate. if d= 16 then we should rotate 16%7= 2
         so before any operation we have to reassign the d places value to optimize our solution
         d=d%arr.length;
@@ -393,7 +408,113 @@ Arrays
 
       -----------------------------------------------------------------------
 
+     # "Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array."
+
+        * Brute force approach - will take 2 loops using linear search. o(n^2)
+
+        * Optimal Approach - we can use sum of first n numbers formula here. if the range is from 0->n .
+          sum1 will store sum of first n numbers - "sum1=(length*(length+1))/2" and we will loop and calculate the sum of elements in the array. we will get the missing number by subtracting them. 0(n)
+
+        * Optimal Approach - one more efficient approach will be to use XOR properties-> a^a=0 and 0^a=a.
+          we will create a loop to traverse over the array and use xor property -> " xor = xor ^ arr[i] ^ i "
+          if array is [103] , range is 0 to 3, xor=0^1 = (0^1)^(1^0) = (0^1)^(1^0)^(2^3).
+          finally xor after cancelling each element out -> xor=2^3 .
+          it seems there something missing in code because we have taken xor of each element till 3, but we have not taken xor of full length, since we will iterate till 3-1->2nd index. therefore after iterating variablei i will have the length stored in it so last important code  is -> "xor ^ i" we can also directly x=do xor of length because it is impossible for us to do xor of length inside loop. TC = 0(n)
+
+        * we should go with xor approach becasue sum approach might be susceptible to integer overflow if the sum exceeds the maximum
+          value representable by the data type.
+
+      -----------------------------------------------------------------------
+
+     # "Given an array 'a' of size 'n' and an integer 'k'.Find the length of the longest subarray of 'a' whose sum is equal to 'k'."
+        Input: ‘n’ = 7 ‘k’ = 3 , ‘a’ = [1, 2, 3, 1, 1, 1, 1] Output: 3
+
+        * Brute Force Approach:TC is 0(N^2) first loop will iterate each element and after calculating sum the ith index will increment,
+          inner loop will start from ith index and go upto n-1 , will store the elements iteratively in sum variable and we will simultaneously validate if sum==k  if this is true then we calculate the length and store it in "maxLength = Math.max(maxLength, length) ", otherwise we will go on iteratin. but to optimize brute force as well, if sum is gt k then break from that indexes sum iteration because we only have positive integers here and no way will the sum decreaseto 'k'.
+
+        * Optimal Approach :  this approach will deal with both Positive and -ve integers.
+          for this approach we have to know what is prefix sum :
+          input numbers	: 1	 2	 3	 4	 5	 6	
+          prefix sums	: 1	 3	 6	10	15	21	, after every iteration we wil add the prefix sum to the current element.
+          prefixSum=0, then in first iteration  prefixSum=0+1=1,2nd iteration -> prefixSum=1+2=3 and on and on.
+
+          in each iteration we will save prefixSum as key and ith index as value in HashMap : map.put(prefixSum, index)
+          except at that situation when prefixSum key is already there inside map : map.containsKey(prefixSum)
+          the reason is that for example input is : [2, 2, 1, -1, 1, 2] and we have to check the longest subarray 
+          so prefixSum at i=1 prefixSum=4 , so we are saving 4 as key and 1 as value that is the index but at 3rd index again prefixSum=4 if we again save in map then for 4 key value will be 3 that shortens the subarray which we dont want. and this happens because sum from index (1+1) to 3 is 0 that is why -> 
+          if (!map.containsKey(sum)) {
+                map.put(sum, i);
+          }
+
+          now second part is doing reverse mathematics, k is the required sum. 
+          check "diffSum=prefixSum - k" to see if it is present in map of prefixSums : " map.containsKey(diffSum) ", if it is then we get the length of subarray [that sums to k] -> " length = i - map.get(diffSum) "
+          if input arr is : [1, 2, 3, 1, 1, 1, 1]
+          and at index 3 prefixSum=6. therefore lets check if 6-3=3 is present in map containing prefixSums with their index
+          we can see that 3 with index 1 is stored in map, that means length of subarray is current index -prefix index =2-1=1
+
+          while comparing and finding subarray is of given sum 'k' there is one corner case that if value with k is at the start index only then map.containsKey(diffSum) will return false but this is wrong so to counter these situations -
+          1. [1 -1 3] 2. [30000] 3. [2 -1 1 1] in all such situations k is present at the ith index with all its left values cancellingeach other out and diffSum is not present in prefixSums map. we will have to check prefixSum 
+          if (prefixSum == k) {
+                length = i + 1;
+            }
+
+    -----------------------------------------------------------------------
+
+    Medium : 
+     
+     # Two Sum
+      1st variant: Return YES if there exist two numbers such that their sum is equal to the target. Otherwise, return NO.
+                  N = 5, arr[] = {2,6,5,8,11}, target = 14 Result: YES
+
+      2nd variant: Return indices of the two numbers such that their sum is equal to the target. Otherwise, we will return {-1, -1}.
+                  N = 5, arr[] = {2,6,5,8,11}, target = 14 Result: [1, 3] 
+
+                  **You may assume that each input would have exactly one solution, and you may not use the same element twice.
+        
+       * we will use Map DS here. 
+        sum =i+x; in this case we know sum and ith index, we just have to check in map whether (sum-i) is present or not.
+        code ->  if (map.containsKey(target - nums[i])) {
+                    arr[0] = map.get(target - nums[i]);
+                    arr[1] = i;
+                    break;
+                } 
+
+      ----------------------------------
+    
+     # Sort an array of 0's 1's and 2's -> Input: nums = [2,0,2,1,1,0] Output: [0,0,1,1,2,2]
+        
+       * Brute Force Approach
+
+      ----------------------------------
+
      # 
+        
+       * 
+
+    -------------------------------------------------------------------------
+    
+    Hard : 
+     
+     # 
+        
+       * 
+
+      ----------------------------------
+    
+     # 
+        
+       * 
+
+      ----------------------------------
+
+     # 
+        
+       * 
+
+    -------------------------------------------------------------------------
+
+    
+
 
          
 
