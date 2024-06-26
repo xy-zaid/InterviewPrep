@@ -5,18 +5,15 @@ CORE Java
 
 Explain why it is public static void main -
 
-
         The public access modifier indicates that the main method can be accessed from anywhere. It allows the JVM to invoke the main method.
 
         Static modifier allows the JVM to call the main method without needing to create an object of the class.
 
         Void return type is used because main is called by JVM and it does not have to return anything to JVM.
 
-
 ---------------------------------------------------------------------------------
 
 What is the contract between hashcode() and equal() method -
-
 
         The contract states that if two objects are equal according to the equals() method, their hash codes must also be equal. Conversely, if two objects have the same hash code, it does not necessarily mean they are equal according to the equals() method.
 
@@ -49,7 +46,7 @@ Internal working of Hashmap -
         `public V put(K key, V value) {…}`
 
         What it’s saying is, to add data in form of key value pair. If there’s no value present for that key, this method will return null(The first time you get null because there is no value already associated with the key in the map). And if we PUT a duplicate key , it will return the old value and update the new value.
-        Step 1: First check if key is null or not. If it’s null, don’t take the hash of the key as it will produce an error and instead take the Value and insert at 0th index of the array, Only one object can be stored at the 0th index.
+        Step 1: First check if key is null or not. If it’s null, don’t calculate the hash of the key as it will produce an error and instead take the Value and insert at 0th index of the array, Only one object can be stored at the 0th index.
         If the key is not null, then take the hash of the key through the hash method.
 
         Step 2: Now this hash will be a long digit integer. The array size cannot be this huge. The default array size is 16. And it grows exponentially in the power of 2. So what we do is, we take the hash and the array size and through some algorithm, produce an index within the range of the size of the array.
@@ -60,7 +57,7 @@ Internal working of Hashmap -
         `public V get(K)`
 
         Step 1: Check if the key is null or not. If the key is null, then return the value kept at the 0th index of the array.
-        Step 2: If the key is not null, take the key and calculate the hash value using hashing function. with this hash value we can run some algo through which we will get an index. and then using the index we check if the key and hashcode are matching with the Entry object in the Node of the Index.
+        Step 2: If the key is not null, take the key and calculate the hash value using hashing function. with this hash value we can run some algo through which we will get an index and then using the index we check if the key and hashcode are matching with the Entry object in the Node of the Index.
 
         Step 3: If we find the value, we return it or else we return null.
 
@@ -77,6 +74,66 @@ Internal working of Hashmap -
 
 -----------------------------------------------------------------------------------
 
+Internal working of HashSet-
+
+        It stores unique elements and permits one null value
+        It is backed by a HashMap
+        It doesn’t maintain insertion order
+        It is not thread-safe
+
+        Whenever we create an instance of HashSet it internally creates an instance of HashMap, basically, each HashSet is backed by a HashMap internally. 
+        public HashSet() {
+                map = new HashMap<>();
+        }
+        HashMap stores the entries in key-value pairs but HashSet is a set of unique elements. Hence the HashSet entries are made key-value pairs using a dummy Object called PRESENT.
+        HashSet values will become key for HashMap (key,value) and value will be a constant object present
+        # private static final Object PRESENT = new Object();
+
+        The add method adds the specified element to this set if it is not already present in the backup map. If this set already contains the element, the method call leaves the set unchanged, and the add method returns false. Otherwise, it returns true when added successfully.
+        public boolean add(E e) {
+                return map.put(e, PRESENT)==null;
+        }
+        
+
+
+------------------------------------------------------------------------------------
+
+Concurrent hashmap and hashmap difference -
+
+        'Hashmap' :
+        Not Thread safe
+        Uses external synchronisation mechanisms for thread safety eg : using synchronized keyword or Collections.synchronizedMap()
+        Better relative performance
+        Fail-fast iterators are used. may throw ConcurrentModificationException if the map is structurally modified during iteration.
+        Allows one null key and multiple null values
+
+        'Concurrent Hashmap':
+        Thread safe
+        uses internal mechanisms to handle concurrent access
+        Fail-safe iterators are used. Won't throw ConcurrentModificationException if the map is structurally modified during iteration.
+        Null is not allowed for both key and value otherwise it will throw NullPointerException
+
+
+------------------------------------------------------------------------------------
+
+CopyOnWriteArrayList -
+
+        It is a thread-safe implementation of the List interface in Java's java.util.concurrent package. For Update operations, it creates a new copy of list and it won't impact on read operation.
+        When a modification operation (add, set, remove) is called, CopyOnWriteArrayList creates a fresh copy of the entire internal list data, applies the modification to the copy, and then replaces the reference to the old list with the new modified copy. This ensures that readers (threads iterating over the list) always see a consistent view of the data, even during concurrent modifications by other threads.
+
+        When to Use CopyOnWriteArrayList:
+        When thread safety is critical for list access and modifications.
+        When read operations are more frequent than write operations.
+        When you want to avoid ConcurrentModificationException issues.
+
+------------------------------------------------------------------------------------
+CopyOnWriteArraySet -
+ 
+        It is a thread-safe implementation of the Set interface in Java's java.util.concurrent package. It builds upon the same principles as CopyOnWriteArrayList to provide safe and efficient access to sets in concurrent programming environments.
+        Similar to CopyOnWriteArrayList, CopyOnWriteArraySet uses a 'copy-on-write' strategy. When a modification operation (add, remove, etc.) is performed, a new copy of the underlying internal array is created with the modification applied. The reference to the old array is then replaced with the new modified copy.
+
+------------------------------------------------------------------------------------
+
 Comparable vs Comparator - 
 
         Let us take any Object of Collection of any type whether that be our own custom type. We require to Sort them from time to time. we can sort them using Collections.sort() method. Syntax of this method is : 
@@ -91,11 +148,11 @@ Comparable vs Comparator -
         public static <T> void sort(List<T> list, Comparator<? super T> c){}
         Comparator is a Functional Interface used for custom sorting order. Consisting of one abstract method compare() and one overriden method equals().
         how to work with Comparator ->
-        Create a class that implements Comparator (and thus the compare() method that does the work previously done by compareTo()).
+        Create a class that implements Comparator (and thus the compare method that does the work previously done by compareTo()).
         Make an instance of the Comparator class.
         Call the overloaded sort() method, giving it both the list and the instance of the class that implements Comparator.
 
-        we can also use lambda expression which is very easy to use and is a replacment of implementation of  multiple comparator classes
+        we can also use lambda expression which is very easy to use and is a replacment of the implementation of  multiple comparator classes
         Comparator<Employee> comparator = (first, second) -> first.doj.getYear() - second.doj.getYear();
 
         A basic differentiating feature is that using comparable we can use only one comparison. Whereas, we can write more than one custom comparators as you want for a given type, all using different interpretations of what sorting means. Like in the comparable example we could just sort by only one attribute, i.e., year but in the comparator, we were able to use different attributes like rating, name, and year as well.
@@ -207,10 +264,14 @@ what is garbage collector in java -
         Sun people provided one assistant which is always running in the background for destruction at useless objects. Due to this assistant the chance of failing java program is very rare because of memory problems.
         This assistant is nothing but garbage collector. Hence the main objective of GC is to destroy useless objects.
 
+        The garbage collector is an automatic memory management system. It's a crucial feature that frees up memory space occupied by unused objects, preventing memory leaks and improving application performance.
+
 
 --------------------------------------------------------------------------------------
 
  how to execute garbage collector -
+
+        Garbage Collection is carried out by a daemon thread called garbage collector and we cannot force gc to happen.
 
         The following are various ways for requesting jvm to run GC:
 
@@ -229,9 +290,126 @@ What is finalize() method -
         Just before destroying any object gc always calls finalize() method to perform cleanup activities.
         If the corresponding class contains finalize() method then it will be executed otherwise Object class finalize() method will be executed.
         finalize() method can be called either by the programmer or by the GC .
+        It can be called only once.
 
 
 ---------------------------------------------------------------------------------------
+
+Memory areas in Heap with respect to GC -
+
+        Heap Memory Areas in JVM with Respect to Garbage Collection
+        +-----------------------------+
+        |           Heap              |
+        +-----------------------------+
+        |        Young Generation     | 
+        |  +-----------------------+  |
+        |  |        Eden           |  |
+        |  +-----------------------+  |
+        |  |    Survivor Space 0   |  |
+        |  +-----------------------+  |
+        |  |    Survivor Space 1   |  |
+        |  +-----------------------+  |
+        +-----------------------------+
+        |        Old Generation       |
+        +-----------------------------+
+        |                             |
+        |          Metaspace(java8)   |
+        +-----------------------------+
+
+        1) Young Generation -
+
+        Eden Space: This is where new objects are initially allocated. Most new objects are created here. Frequent minor GCs clean up this space. Objects that survive are moved to survivor spaces.
+        
+        Survivor Spaces (S0 and S1): These are two equal-sized areas where objects that survive a minor GC in the Eden space are moved. Objects are copied between the two survivor spaces during subsequent minor GCs.
+        Two survivor spaces (S0 and S1) work in a ping-pong manner. Objects that survive a GC in the Eden space are moved to one survivor space.On subsequent minor GCs, objects are copied between the two survivor spaces. When an object survives enough GCs, it is promoted to the Old Generation.
+        
+        2) Old Generation (Tenured Generation) -
+
+        This area holds objects that have a longer lifespan and have survived multiple minor GCs. Objects are promoted from the Young Generation to the Old Generation based on their age or other criteria defined by the garbage collector.
+        Less frequent major GCs clean up this space. More time-consuming than minor GCs.
+
+
+------------------------------------------------------------------------------------------
+
+GC Process -
+
+        Garbage Collection Process in Action -
+
+        1.) Object Allocation - New objects are allocated in the Eden space.
+
+        2.) Minor GC - When the Eden space fills up, a minor GC is triggered. Live objects in the Eden space are moved to one of the survivor spaces and their age is increased by 1. Dead objects in the Eden space are deleted, freeing up space.
+
+        3.) Minor Gc triggered again - When the Eden space fills up, a minor GC is triggered again. Dead objects in the Eden space are deleted, freeing up space. This time Live objects are moved to the Survivor space that is empty for eg S1 and age is again increased by 1. Again when minor GC is triggered, now S0 is empty so live objects from s1 and Eden space will be moved to S0 and age increased. This cycle goes on and on.
+        Each object has an age, which represents the number of minor GC cycles it has survived. The JVM uses a parameter called "MaxTenuringThreshold" to determine the maximum age before an object is promoted. Once an object's age exceeds this threshold, it is promoted to the Old Generation.
+
+        3.)Promotion to Old Generation - Objects that survive multiple minor GCs in the survivor spaces are promoted to the Old Generation. When an object’s age reaches the MaxTenuringThreshold, it is moved from the Survivor space to the Old Generation.
+
+        4.) Major GC - When the Old Generation fills up, a major GC is triggered. Live objects in the Old Generation are compacted, and dead objects are collected. This process is more time-consuming and can cause longer pause times.
+
+
+-----------------------------------------------------------------------------------------
+
+Algorithm used by JVM for GC -
+
+        1. Mark-and-Sweep Algorithm
+         it consists of two main phases: the Mark phase and the Sweep phase
+
+        a) Mark Phase - (Marking objects as Alive)
+        Identify all the live objects in the heap. In this phase, objects which are reachable from the program are marked as reachable.  Every allocated object on the heap has a flag let’s call marked set to false when it is allocated. During the mark phase, this flag is turned to true if the object is reachable.
+        Each time the garbage collector comes across a reachable object, the marked flag is set to 'true'. The other objects will have marked flag set to 'false' by default during initialisation.
+
+        b) Sweep Phase - (Sweeping dead objects)
+        This phase is used to clean up all the objects which weren’t marked in the Mark phase. The unreachable objects are deleted thereby allowing the program to allocate more objects subsequently.
+        The Garbage Collector will iterate through all the entries in the heap linearly, and find all the objects are unreachable or the one which have marked flag set to false. It will delete all such unreachable objects and the program will continue execution.
+
+
+        2. Mark-and-Compact algorithm 
+         Mark and Sweep with Compact consists of three main phases out of which mark and sweep phase work the same as above.
+
+        c) Compact Phase - (Compact remaining objects)
+        Move all live objects by moving them towards the beginning of the heap to one end of the heap, reducing fragmentation and making space for new objects contiguous.
+
+--------------------------------------------------------------------------------------
+
+Types of GC -
+
+        1. Serial Garbage Collector -
+
+        The Serial Garbage Collector is the simplest and oldest garbage collector in Java. It uses a single thread to perform garbage collection, making it suitable for single-threaded applications or small-scale applications with limited memory. It uses a “stop-the-world” approach, meaning that the application’s execution is paused during garbage collection. This can lead to noticeable pauses in larger applications.
+        Algorithm: Mark-and-Compact
+
+        2. Parallel Garbage Collector - 
+
+        The Parallel Garbage Collector, improves upon the Serial Garbage Collector by using multiple threads for garbage collection.
+        Uses multiple CPU to perform GC, multiple threads doing mark or sweep etc.Does not kick in unti heap is full/near full. It "stops-the-world" when it runs.Uses multiple threads to perform garbage collection concurrently, reducing the duration of stop-the-world pauses. It is well-suited when there is less memory and lesser no. of CPUs and applications that prioritize throughput(number of request received by a service) and can withstand pauses.
+        Algorithm: Parallel Mark-and-Compact
+        Java 8
+
+        3. CMS (Concurrent Mark-Sweep) Garbage Collector -
+
+        The CMS Garbage Collector aims to further reduce pause times by performing most of its work concurrently with the application threads. It does not waits for the old generation to be full and runs as the application runs."stops-the-world" only during mark/remark. It is well-suited when there is more memory and High no. of CPUs and applications that demand short pauses.
+        Algorithm: Mark-and-Sweep
+
+        4. G1 (Garbage-First) Garbage Collector -
+        The G1 Garbage Collector is designed to provide high throughput and low-latency garbage collection. It divides the heap into regions and uses a mix of generational and concurrent collection strategies. It dynamically adjusts its behavior based on the application’s memory requirements and aims to meet specified pause time goals. G1 is well-suited for applications that require low-latency performance and can handle larger heaps.
+        Algorithm: Region-based with Concurrent Marking and Compaction
+        Java 11
+
+
+----------------------------------------------------------------------------------------
+
+How can memory leak occurs in java even when we have automated garbage collection -
+
+        1) If objects are continually added to a static collection without being removed when they are no longer needed.
+        # private static List<Object> staticList = new ArrayList<>();
+
+        # public void addToList(Object obj) {
+        # staticList.add(obj); // Objects added to staticList are never removed
+        # }
+
+        2) Static Fields - private static Object myObject = new Object();
+
+------------------------------------------------------------------------------------------
 
 What is serialization - 
 
@@ -257,7 +435,7 @@ Difference between HashTable and HashMap -
         Hashtable is synchronized, does not allow null keys or values, and offers fail-safe iterators. On the other hand, HashMap is not synchronized by default, allows null keys(only one) and values(multiple null values), and offers fail-fast iterators. If you require thread-safe operations or need to disallow null keys or values, Hashtable may be a better choice. Otherwise, HashMap is generally more commonly used due to its better performance in single-threaded scenarios.
 
 -------------------------------------------------------------------------------------
-Difference Functional Interface and Normal Interface -
+Difference b/w Functional Interface and Normal Interface -
 
         # FI contains only one abstract method(SAM) unlike Normal Interface,
         # Normal interfaces can be implemented by classes or extended by other interfaces.
@@ -265,12 +443,66 @@ Difference Functional Interface and Normal Interface -
         # Normal interfaces are used to define a contract or a set of behaviors that classes implementing the interface must adhere to. 
 
 -----------------------------------------------------------------------------------------
-Can we have a default method in Functional Interface -> Yes
+Can we have a default method in Functional Interface -> Yes( a replacment for class implementation)
   
 -----------------------------------------------------------------------------------------
+
+Write a Java program to create two threads, one printing even numbers from 1 to 10, and the other printing odd numbers from 1 to 10. Ensure proper synchronization to alternate between the two threads.
+
+        just by using synchronized keyword in run method we will be able to achieve the result
+
+------------------------------------------------------------------------------------------
+Write a Java program to create two threads, one printing even numbers from 1 to 10, and the other printing odd numbers from 1 to 10.And one thread running before the other one
+
+        public class Interview implements Runnable {
+        public static void main(String[] args) throws InterruptedException {
+        Interview interview = new Interview();
+        Thread thread1 = new Thread(interview, "Thread one");
+        Thread thread2 = new Thread(interview, "Thread two");
+        thread1.start();
+        thread2.start();
+        thread2.join();
+
+        public void run() {
+        if (currentThread().getName().equals("Thread one")) {
+            for (int i = 0; i < 6; i++) {
+                if (i % 2 == 0) {
+                    System.out.println(i + " " + currentThread().getName() );
+
+                }
+            }
+        }
+        if (currentThread().getName().equals("Thread two")) {
+            for (int i = 0; i < 6; i++) {
+                if (i % 2 != 0) {
+                    System.out.println(i + " " + currentThread().getName() );
+
+                }
+            }
+         }
+        }
+    }
+}
+
+
+
+--------------------------------------------------------------------------------
 First non repetative Character using Stream API()
 
 ------------------------------------------------------------------------------------
+Spring
+=====================================
+Purpose of Maven & uses
+Diff between Group Id & Artifact Id
+Dependencies in Central / local Id
+Purpose of JSP Servlets
+Tomcat Related questions
+
+Actuator
+Spring profiles
+Endpoint naming convention REST
+Integration - never used it.
+-------------------------------------------------------------------
 
 Spring and Spring boot differences -
         
@@ -283,7 +515,6 @@ Spring and Spring boot differences -
         Spring Boot simplifies dependency management by providing a set of starter dependencies that include commonly used libraries
 
         Spring Boot - Advantages
-=======================
 
         1) Less Configuration & No Xmls Configurations
 
@@ -306,6 +537,24 @@ Spring and Spring boot differences -
         Spring Boot provides default logging configuration based on the chosen logging framework (such as Logback or Log4j).
 
 ---------------------------------------------------------------------------------------------------------------
+
+beans scope - Scope represents how many objects should be created for a Spring Bean
+
+        => In Spring framework we have below scopes
+
+			1) singleton    ( default scope )
+
+			2) prototye 
+
+			3) request
+
+			4) session
+
+        -> Singleton scope means only one object will be created for the class in IOC Container. This is default scope of spring bean.
+
+        -> Prototype scope means every time new object will be created.
+
+---------------------------------------------------------------------------------------------------------------
 What is ControllerAdvice -
 
         @ControllerAdvice is an annotation in Spring MVC that allows you to handle global exception for the application and is a class level annotation.
@@ -326,6 +575,51 @@ How do to Authorization and Authentication -
         Authentication in spring security can be provided once we decide the authentication providers to be used. like  JDBC-based authentication, LDAP, oath or custom implementations.
 
 -----------------------------------------------------------------------------------------------------------------
+
+How IOC container works in spring
+
+ IOC Container
+
+        -> IoC stands for Inversion Of Control.
+
+        -> IoC is a Spring Container responsible for instantiating Spring Beans, wired Dependencies in Spring Applications and manage life cycle of Spring Beans.
+        -> Dependency Injection (DI) is a design pattern and its a process of providing objects that a class needs (its dependencies) instead of having the class create them itself.
+
+        Note: IoC container will manage life cycle of Spring Beans.
+
+--------------------------------------------------------------------------------------------------------------------
+
+What is Spring Bean ? {
+
+        They are the objects managed by the Spring IoC container.
+        Spring beans are instantiated, configured, wired, and managed by IoC container.
+        Any Java class whose lifecycle (creation to destruction) is managed by IOC is called as Spring Bean.
+        We can represent Java class as Spring Bean in 3 ways
+
+		1) XML Approach
+
+				Ex: 	<bean id ="id1" class = "pkg.ClassName" />
+
+		2) Annotation Approach (Recommended)
+
+				Ex: @Component, @Service, @Repository etc....
+                3) Java Configuration: you can use @Configuration classes to define beans.
+
+                                Ex: @Configuration
+                                public class AppConfig {
+                                    @Bean
+                                    public Car car() {  
+                                         return new Car();
+                                   
+                                   
+                                        }
+                                }
+        Note: In Spring we can use both XML & Annotation approaches.  SpringBoot will support only Annotations (no xmls)
+              Spring uses type-based injection, so as long as there is a bean of type I am injecting available in the application context, it will be injected into the constructor parameter, regardless of its name.
+              "application context" refers to an environment where all the beans (components) of a Spring application are managed and configured
+                        }
+
+-----------------------------------------------------------------------------------------------
 Exceptions
 ----------
 
@@ -345,26 +639,156 @@ One more tricky Java question from the overloading and overriding concept. The a
 
 ---------------------------------------------------------------------------------------------------------------
 
-Multi Threading 
----------
+Multi Threading{ - Allows a program to execute multiple operations at the same time
+
+ Process - Process is an instance of a program being executed.(generally different applications in a OS)
+        Resources: Processes have their own resources (e.g., memory, threads).
+        Independence: Processes are independent of each other.
+        Memory: Processes have their own private memory.
+        Execution: Processes can run parallelly.
+
+        JVM Instance: A new JVM instance is created for each process.
+        Memory Allocation: Processes can specify minimum and maximum Heap sizes using JVM parameters
+        
+        
+ Thread - is the smallest sequence of instructions executed independently by the CPU.
+        Main Thread Created automatically when a process starts and from that Multiple threads can be created to perform tasks concurrently.
+        Local Memory(memory not shared between threads)
+        Register: Used for storing frequently used values.when JIT converts bytecode into m/c code, it uses register to optimize the generated m/c code. Also helps in context switching
+        Stack: Stores method calls and local variables.
+        Counter(Program Counter): Keeps track of program execution. By pointing to the address in code segment.
+                they have the address of code segment where respective thread has to start run
+        
+        Shared Memory(memory shared between threads)
+        Code Segment: Stores machine code generated from Java bytecode. Contains the compiled ByteCode i.e machine code. (101010) read only 
+        Data Segment: Stores global and static variables. threads can modify this data
+        Heap Memory: Objects are allocated in the Heap.
+                }
+
+------------------------------------------------------
+Context Switching - 
+        A thread's register is used to store intermediate results during execution.
+        The Operating System (OS) schedules thread execution.
+        When a thread's time slice ends, its register data is saved.
+        The OS switches to another thread, loads its register data, and resumes execution.
+
+        when we have multiple cores and thread is less then we can run parallelly without context switching.
+
+-----------------------------------------------
+
 What is Advantages
-How to implement
-best way to implement thread
+
+        Benefits of Multithreading
+        Improved performance: Tasks can be parallelized, reducing execution time.
+        Increased responsiveness: Multithreading allows faster response to client requests.
+        Resource sharing: Multithreading optimizes resource utilization.
+
+------------------------------------------------
+
+Challenges of Multithreading- 
+
+        Concurrency issues: Shared resources can lead to data inconsistencies and deadlocks. These must be handled through synchronization.
+        Complex code: Multithreading code can be difficult to understand and debug.
+        Testing challenges: It can be challenging to test multithreaded code effectively.
+
+---------------------------------------------------
+
+Multitasking vs. Multithreading -
+
+        Multitasking: Different processes (tasks) run concurrently, each with its own resources. do not share any resources
+        Multithreading: Different threads within a process share resources, including code, data, and heap segments.
+        Share resources. Lightweight
+
+----------------------------------------------------
+
+Traditional approach v/s Executor approach of managing threads -
+
+        With Traditional approach, 
+        You directly create threads using the Thread class.You implement the run() method of the Runnable interface or subclass Thread to define the task's logic. You control thread scheduling and synchronization using mechanisms like start(), join(), sleep(), and synchronized blocks.
+        We need to manually create and manage threads for each task.
+        This can be cumbersome and inefficient especially when dealing with large no. of tasks.
+        Can be complex and error-prone, especially for managing multiple threads and their lifecycles. Code can become difficult to maintain due to boilerplate thread management logic. Increased risk of race conditions and deadlocks if synchronization is not handled properly.
+
+        Executors on the other hand handle thread management automatically, alowing you to focus on tasks rather than the complexities of thread Creation and coordination.
+        Java Executor is used to run runnable object without creating new thread every time and mostly it reuse the already created thread.
+
+----------------------------------------------------
+
+Executor Framework -
+
+        'Executor' is an interface exposing only one method execute,
+         void execute(Runnable thread) - it executes the given thread.
+
+        'ExecutorService' is yet another interface, the extension of the Executor interface. It has a much more powerful contract than the Executor. With around 13 methods to override if we decide to implement it. These methods help in managing and controling the execution of threads
+        for eg- ExecutorService defines shutdown() method which stops the invoking ExecutorService, otherwise threads will not stop.
+        void shutdown().
+        3 classes implementing ExecutorService are ThreadPoolExecutor, ScheduledThreadPoolExecutor, and ForkJoinPool. 
+        package- java.util.concurrent
+
+        'Executors' class is a type of util class that has a set of factory methods to create different types of thread pools.
+        eg- Executors.newFixedThreadPool(5);
+
+        'Thread Pools' in java provides a set of threads that are used to execute various task.
+        Instead of creating and destroying threads for each task, a thread pool maintains a pool of reusable threads, reducing the overhead of thread creation for each task.
+
+        You can create a thread pool using Executors utility class,
+        There are different types of thread pools, such as fixed-size thread pools(newFixedThreadPool), cached thread pools(newCachedThreadPool) and Scheduled thread pool(newScheduledThreadPool).
+
+        `static ExecutorService newCachedThreadPool()`
+        # it creates a thread pool that adds threads as needed and reuses existing threads if available. Threads that have been idle for a certain period(60 sec) maybe terminated to reduce resource consumption.
+
+        `static ExecutorService newFixedThreadPool()`
+        # it creates a thread pool that consists of a specified number of threads.
+
+        `static ExecutorService newScheduledThreadPool()`
+        # it creates a thread pool that can schedule commands to run after a given initial delay or to execute periodically
+
+        eg- Instead of hiring new workers for each customer's order, the restaurant has limited no. of workers, ready to take orders and prepare food. Similarly, a Thread Pool in java has a limited no. of threads ready to handle tasks.
+
+        "reusability"-once a task is completed,a thread can be assigned to another task instead of being destroyed.
+        "resource management"-manage system resources by limiting the nummber of threads that can be created, improving performance.
+        "task queuing"-if there are more task than available threads, then tasks are queued and executed when a thread becomes available
+        "effficiency"-reduces the overhead of thread creation, making execution of tasks efficient.
+
+
+-----------------------------------------------------
+
+Runable and Callable -
+
+        Runnable and Callable are interfaces in Java used for representing tasks that can be executed by threads.
+
+        Runnable: Defines a single method called run(). This method contains the code that the thread will execute when it's started. 
+        run() method doesn't return any value.
+        Throws Unchecked Exceptions only and cannot throw checked exceptions.
+        Suitable for tasks that dont need to return a result and don't throw checked exceptions.
+        # public void run();
+
+        Callable: Defines a single method called call(). This method also contains the code for the task, but it can return a value of any generic type <V>. Additionally, call() can throw checked exceptions.
+        Throws Unchecked and Checked Exceptions.
+        Preferred for tasks that need to return a result and might encounter checked exceptions. Examples include fetching data from a remote server, performing calculations with a result, or tasks that might throw exceptions like IOException or SQLException.
+        # V call() throws Exception;
+
+
+-----------------------------------------------------
+
+Future -
+        Future interface in Java (part of the java.util.concurrent package) represents the eventual result of an asynchronous computation.
+        Callable tasks return java.util.concurrent.Future object. Using Future we can find out the status of the Callable task and get the returned Object. It provides the get() method that can wait for the Callable to finish and then return the result.
+
+
+-----------------------------------------------------
+
+
+
 life cycle method
 wait vs sleep
 what is dead lock how to resolve this
-what is thread synchronization
 what is thread lock
 write code for Concurrent thread execution
 what is Notify and notifyall
 Diff between Notify & Notify All
-Thread, Callable
-How synchronization works
 Thread life cycle
 Reflections in java
-runable and callable  
-executor service 
-syncronization
 What is yield() in multithreading
 What is transient variable
 Java Dead lock ...asked in one recent interview
@@ -402,20 +826,6 @@ Mutilple connections in JDBC
 Inner Join and left Join
 
 
-Spring
-=====================================
-Purpose of Maven & uses
-Diff between Group Id & Artifact Id
-Dependencies in Central / local Id
-Purpose of JSP Servlets
-Tomcat Related questions
-How IOC container works in spring
-DI container 
-beans scpoe 
-Actuator
-Spring profiles
-Endpoint naming convention REST
-Integration - never used it.
 
 
 
@@ -432,8 +842,6 @@ Transaction in microservices
 
 Singleton
 how to make class singleton
-Bean scopes
-What is default bean scope
 How synchronization managed with singleton beans
 
 
@@ -477,8 +885,17 @@ How many types of injections & Uses
 What is an index
 Joining & Aggregation
 
+-------------------------------------------------------------
+
 Design Pattern (Template)
-design principle(solid, open close)
+Null Object pattern (optional)
+Factory Pattern (beans)
+Singleton(db)
+
+--------------------------------------------------------------
+
+
+
 design patterns
 Design patterns with examples that you have worked upon
 explain string class, immutable, mutable, more immutable classes
@@ -653,3 +1070,831 @@ Attributes in HTML
 Creation of things in HTML
 Main diff between restful and Soap services
 Common Problem in Scalability
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+Snapwork company (1st Round)-{
+ Q- Difference between Component and Bean  
+ ans - 
+ @Component is a generic stereotype annotation. It marks a Java class as a Spring component, indicating that Spring should manage the lifecycle of this class and instantiate it as a bean.   
+ 
+ In Spring, a "bean" is simply an object managed by the Spring IoC (Inversion of Control) container. It is an instance of a class that Spring manages and provides to other parts of the application when needed.
+ While a component is one way to define a bean in Spring, beans can also be defined in other ways such as using XML configuration, Java configuration, or annotations like @Bean.
+ --------------------------
+ Q- Spring Scheduler
+ ans -
+ It allows developers to schedule the execution of certain tasks at specific intervals or times. Spring Scheduler is often used for automating recurring tasks, such as batch processing, sending emails, or updating data.
+ 
+ @Component
+ @EnableScheduling
+ public class MyScheduler {
+ 
+     @Scheduled(cron = "0/10 * * * * *") // Execute every 10 seconds
+     public void scheduledTask() {
+         // Task logic goes here
+     }
+ }
+ @EnableScheduling Annotation: The @EnableScheduling annotation is used to enable Spring's scheduling capabilities in the application. When placed on a configuration class (typically the main application class or a configuration class), it allows Spring to detect and process Spring's scheduling annotations such as @Scheduled.
+ 
+ @Scheduled Annotation: The @Scheduled annotation is used to annotate a method in the MyScheduler class, indicating that the method should be executed periodically according to the specified cron expression. In this case, the scheduledTask() method will be executed every 10 seconds based on the specified cron expression "0/10 * * * * *".
+ 
+ cron = "0/10 * * * * *": This cron expression specifies that the task should be executed every 10 seconds. The cron expression consists of six fields representing seconds, minutes, hours, day-of-month, month, and day-of-week, respectively.
+ scheduledTask() Method: This method contains the logic that you want to execute periodically. In this example, the comment // Task logic goes here indicates where you would place the actual logic of the task.
+ ------------------------------
+ Q- Multithreading 
+ ------------------------------
+ Q-Write a Java program to create two threads, one printing even numbers from 1 to 10, and the other printing odd numbers from 1 to 10. Ensure proper synchronization to alternate between the two threads.
+ ans- 
+ Create two Thread objects and by using lambda exp in constructor implement run method respectively for even and odd executing Threads.
+ use Thread.join after even thread.start, so that main thread will pause and wait untill even thread executes.
+ ---------------------------
+ Q- Thread synchronisation 
+ ans - 
+ 1. Synchronized is the keyword applicable for methods and blocks but not for classes and variables.
+ 2. If a method or block declared as the synchronized then at a time only one Thread is allow to execute that method or block on the given object.
+ 3. The main advantage of synchronized keyword is we can resolve date inconsistency problems.
+ 4. But the main disadvantage of synchronized keyword is it increases waiting time of the Thread and effects performance of the system.
+ 5. Hence if there is no specific requirement then never recommended to use synchronized keyword.
+ 6. Internally synchronization concept is implemented by using lock concept.
+ 7. Every object in java has a unique lock. Whenever we are using synchronized keyword then only lock concept will come into the picture.
+ 8. If a Thread wants to execute any synchronized method on the given object 1st it has to get the lock of that object. Once a Thread got the lock of that object then it's allow to execute any synchronized method on that object. If the synchronized method execution completes then automatically Thread releases lock.
+ 9. While a Thread executing any synchronized method the remaining Threads are not allowed to execute any synchronized method on that object simultaneously. But remaining Threads are allowed to execute any non-synchronized method simultaneously.
+ ---------------------------------
+ Q- Difference between SQL and mongoDB
+ ans-
+ 'Data Model':
+ 
+ SQL: SQL databases, also known as relational databases, use a tabular structure to store data. Data is organized into tables with rows and columns, where each row represents a record, and each column represents a data attribute.
+ MongoDB: MongoDB is a NoSQL database that uses a document-oriented data model. Instead of tables, data is stored in collections of JSON-like documents. Each document can have a flexible schema, meaning different documents within the same collection can have different fields.
+ 
+ 'Query Language':
+ 
+ SQL: SQL databases use the SQL language for querying and manipulating data. SQL is a standardized language with commands such as SELECT, INSERT, UPDATE, DELETE, JOIN, etc.
+ MongoDB: MongoDB uses a query language called the MongoDB Query Language (MQL). MQL is JSON-like and supports a wide range of query operations, including CRUD operations (create, read, update, delete), aggregation pipelines, text search, and geospatial queries.
+ 
+ 'Schema Flexibility':
+ 
+ SQL: SQL databases typically have a rigid schema where the structure of the data (i.e., the table schema) must be defined upfront. Any changes to the schema require altering the table, which can be complex and time-consuming.
+ MongoDB: MongoDB offers schema flexibility, allowing documents within a collection to have different structures. This makes it easier to evolve the data model over time without requiring schema migrations.
+ 
+ 'Scalability':
+ 
+ SQL: Traditional SQL databases are designed for vertical scalability, meaning they scale by adding more resources (CPU, memory) to a single server. Scaling out (adding more servers) can be challenging and often requires complex sharding techniques.
+ MongoDB: MongoDB is designed for horizontal scalability, meaning it can scale out by distributing data across multiple servers. MongoDB supports built-in sharding, replication, and automatic failover, making it easier to scale and handle large volumes of data.
+ 
+ 'ACID vs. BASE':
+ 
+ SQL: SQL databases typically follow the ACID (Atomicity, Consistency, Isolation, Durability) principles, which ensure data integrity and transactional consistency.
+ MongoDB: MongoDB follows the BASE (Basically Available, Soft state, Eventually consistent) principles, which prioritize availability and partition tolerance over strong consistency. MongoDB provides eventual consistency by default but offers features like multi-document transactions for applications requiring stronger consistency guarantees.
+ 
+ -----------------------------------
+ Q- Orchestration (micro services)
+ ans-
+ 
+ ----------------------------------
+ Q- Sql- 2nd highest salary
+ ans-
+ select * 
+ from employeeTable
+ order by salary desc
+ limit 1(index),1(no. of rows to be viewed)
+ 
+ ----------------------------------
+ Q-Message queue
+ ans-
+ 
+ -----------------------------------
+}
+ 
+-------------------------------------------------------------------------
+
+Volkswagen Company (1st Round){
+        
+ Q-Explain the SOLID principle?
+ The SOLID principles are fundamental guidelines that help developers create Readable, Maintainable, Modular and Testable software systems. Let me break down each principle briefly:
+
+       1.Single Responsibility Principle (SRP): 
+         This principle suggests that a class should have only one reason to change. 
+        In other words, it should have a single responsibility or job within the system. By keeping classes focused on a specific task, we can make our code more understandable, reusable, and easier to maintain
+        This leads to a High Cohesion Design.
+
+        Real-life example: 
+         Consider a chef in a restaurant. Instead of having one chef responsible for everything (cooking, serving, cleaning), the tasks are divided among specialized roles: one chef cooks, another serves, and a different team handles cleaning. Each person has a single responsibility, making the kitchen more efficient.
+         Similarly, in software, a class that does too much becomes harder to understand and maintain.
+
+       2.Open / Closed Principle (OCP): 
+
+        This principle encourages us to design software entities that are open for extension but closed for modification. This means we should be able to extend the behavior of a module without altering its existing code. 
+        We achieve this through techniques like inheritance, composition, or dependency injection.
+        After production(live) we should not modify our existing class, instead extend the class if you need the functionality and add new functionality.This way modification is restricted and extension is open.
+
+        Real-life example: 
+         Imagine a car manufacturer designing a new model. Instead of modifying the existing model directly, they create new features through add-ons or accessories.
+         Similarly, in software, designing modules to be open for extension allows for new features to be added without altering existing code, reducing the risk of introducing bugs.
+
+       3.Liskov Substitution Principle (LSP): 
+       
+        The LSP states that if class B is subtype of A, then we should be able to replace object of A with B without breaking behaviour of the program. In other words, making sure that when you use a subclass (or derived class) in place of its superclass (or base class), the program should behave correctly without any surprises or unexpected behaviors.
+        Subclass should extend the capability of parent class and not narrow it down.
+
+        Real-life example: 
+        we have a Bike interface with accelerate and turnOnEngine method
+        if MotorCycle implements this interface then the behaviour of the program will not change.
+        but if Cycle implements this interface then the behaviour of the program will change and it Will violate LSP because Cycle cannot turn on its engine.
+
+        We have a Social Media abstract class which has few features - status update, chat with friend, group vid call, add or follow new friend.
+        nd three class Facebook, Instagram and Whatsapp extend Social Media class.
+        for Facebook , it can implement/override all the features present in Social Media ,
+        but Instagram cannot implement grp vid call feature. So this violates LSP as behaviour changes in grp vid call feature. And in the same way if Whatsapp extends Social Media and implement the features then it will also violate LSP in case of "add or follow new friend" feature. 
+
+       4.Interface Segregation Principle (ISP): 
+       
+        Interfaces should be such that clients should not implement unnecessary methods that they do not need. 
+
+        Real-life example: 
+         RestaurantEmployee Interface has three methods washDish(), serveCust() and cookFood()
+
+         if waiter implements it then washDish and cookFood is not his job.
+         Instead we should segregate down our interface such that WaiterInterface ChefInterface. so that when waiter implements WaiterInterface , it does not have to implement unnecessary methods.
+
+       5.Dependency Inversion Principle (DIP): 
+        
+        Class should depend on interfaces rather than concrete classes. 
+
+        Real-life example: 
+         There is a Payment gateway where phonepe gpay and paytm are options of payment, if we directly use object of phonepe gpay or paytm to process payment, then this will violate  DIP.
+
+         Instead,We have an interface for the payment gateway and then having classes for each specific payment option (PhonePe, GPay, Paytm) implement this interface.
+         and take the reference object of interface payment gateway, this works on DIP.
+---------------------------------
+ Q-Hashmap and internal implementation of Hashmap
+-------------------------------
+ Q-String and  immutablity concept
+-------------------------------
+ Q-Final finalize and finally 
+------------------------------
+ Q-Try without catch possible or not
+ ans- Yes, it is possible to have a try block without a catch block in Java buy using -> Try Block Finally Block
+-----------------------------
+ Q- How to do exception handling
+------------------------------
+ Q- Controller advice, exception handler with examples 
+------------------------------
+ Q- How many embedded servers in spring boot-
+ ans- 
+ Tomcat, Jetty, and Undertow.
+ By default, Spring Boot applications run on an embedded Tomcat server on port 8080. You can change the port by setting the 'server.port' property in your application.properties file.
+ If you want to use a different embedded server, you can exclude the Tomcat dependency from your pom.xml file and add the dependency for the server you want to use.
+------------------------------
+ Q- What are Spring actuators and how to use them
+ ans- 
+ Spring Boot Actuator provides production-ready features to monitor and manage Spring Boot applications. It provides various set of pre-built endpoints or by creating custom ones. These endpoints provide a wide range of useful information about the application’s health, performance, and behavior, such as system metrics, database connection details, request tracing, and more.
+
+ To enable Spring Boot Actuator in the application, we need to add the spring-boot-starter-actuator dependency to your project.
+ Once you have enabled Actuator, you can access the endpoints at the following URLs:
+/actuator/health, /actuator/info, /actuator/metrics, /actuator/dump, and /actuator/shutdown.
+------------------------------
+ Q- Spring DevTools
+ ans- 
+ Applications that use spring-boot-devtools will automatically restart whenever files on the classpath change
+------------------------------
+ Q- Ioc container, dependency injection 
+------------------------------
+ Q- Beans scope 
+------------------------------
+ Q- Annotations- Autowired, primary, configuration properties, qualifier, Value
+ ans- 
+ @Autowired : To perform dependency injection
+ Autowiring means IoC container will identify dependent bean and it will inject into target bean.
+
+ @Primary : To represent primary bean for Autowiring
+ By using @Primary, you can explicitly specify which bean should be used as the default when multiple beans of the same type are available in the application context. To be used at class level.
+
+ @Qualifier : To perform autowiring based on byName
+	In the MyBeanConsumer class, we use @Qualifier("myBeanA") to specify that we want the bean with the qualifier "myBeanA" to be injected. By using @Qualifier, you can explicitly specify the bean to be used when there are multiple beans of the same type.
+        There may be scenarios when we create more than one bean of the same type and want to wire only one of them with a property. This can be controlled using @Qualifier annotation along with the @Autowired annotation.
+
+ @Value Injects values from properties files or environment variables. 
+ It is also used to assign default values to variables and method arguments.
+
+ @ConfigurationProperties :  Class annotated with @ConfigurationProperties automatically loads bunch of data members(with matching property names)from Configuration file(such as application.properties), as shown below
+
+ @Component
+ @ConfigurationProperties
+ public class CompanyDetails{
+
+  private String company_name;
+  private String company_ceo;
+  private String head_office_city;
+  
+  //methods defined by this class...
+ }
+ #contents of application.properties file
+ company_name = WXYZ Company 
+ company_ceo = Some One
+ head_office_city = Bangalore
+------------------------------
+ Q- In a list of integers from 1 to 10 , Use for loop and remove elements. What will the response be
+ ans- This may throw 'ConcurrentModificationException' as after removing the elements structure of the collection is modified
+
+ for (int element : numbersList) {
+        if (element % 2 != 0) {
+        numbersList.remove(element); 
+        #  Throws ConcurrentModificationException
+        }
+    }
+------------------------------
+ Q- @Transactional Annotation in spring boot, how to use it
+ ans- 
+ This annotation can be applied to the class level or method level. It provides data reliability and consistency. When a method is indicated with @Transactional annotation, it indicates that the particular method should be executed within the context of that transaction. If the transaction becomes successful then the changes made to the database are committed, if any transaction fails, all the changes made to that particular transaction can be rollback and it will ensure that the database remains in a consistent state.
+ When @Transactional is applied at both the class and method levels, the method-level annotation takes precedence. This means that if a method is annotated with @Transactional, its transactional behavior will override any transactional behavior defined at the class level.
+
+ To use @Transactional annotation, you need to configure transaction management by using @EnableTransactionManagement to your main class of Spring Boot application
+ Annotate the service methods that should be executed within a transactional context with @Transactional annotation
+    @Transactional
+    public void performTransactionalOperation() {
+        // Perform database operations here
+        repository.save(entity);
+    }
+------------------------------
+ Q- transaction annotation is in spring or jpa
+ ans-  Spring
+------------------------------
+ Q- Linked list is linear or non linear 
+ ans- 
+ A linked list is a linear data structure.
+
+ In computer science, a linear data structure is a data structure where elements are arranged in a sequential manner, with each element connected to its next element in a linear fashion. In a linked list, each element, known as a node, contains a value and a reference (or pointer) to the next node in the sequence. This linear arrangement allows traversal of the elements in a sequential order.
+------------------------------
+ Q- how to identify looking at node whether it is circular doubly or single LL
+ ans- 
+ 1. Singly Linked List:
+ In a singly linked list, each node contains a data element and a reference (pointer) to the next node in the sequence.
+ The last node in the list points to null, indicating the end of the list.
+ Singly linked lists allow traversal in only one direction (forward).
+
+ 2. Doubly Linked List:
+
+ In a doubly linked list, each node contains a data element and references (pointers) to both the next node and the previous node in the  sequence.
+ The first node's previous pointer and the last node's next pointer point to null, indicating the start and end of the list, respectively.
+ Doubly linked lists allow traversal in both forward and backward directions
+
+ 3. Circular Linked List:
+
+ In a circular linked list, the last(tail) node's next pointer points back to the first node(Head), forming a circular structure.
+------------------------------
+ Q- Optional class and its use with examples
+ ans- 
+ Optional class is a container that either contains a non-null value or nothing(empty Optional ). The Optional class is an implementation of the Null Object pattern, which is a design pattern that was designed to reduce the number of null checks in code. With Optional, you can write cleaner and more concise code that is easier to maintain.The biggest benefit of using the Optional class is that it improves the readability of code.
+ To use the Optional class, simply wrap your object in an Optional object like this: 
+ Optional<T> optional = Optional.ofNullable(T). 
+ You can then use the various methods provided by Optional to handle the cases where the value is present or not.
+ Optional.of()
+ This method behaves like the ofNullable() function and it will return an Optional for the given value but the only difference is that the of() method does not allow a null value and Throws: NullPointerException if value is null
+------------------------------
+ Q- Method reference and use with examples
+ ans- 
+ Method references in Java provide a way to refer to methods or constructors without invoking them through double colon (::). They're often used in functional interfaces, lambda expressions, and stream operations to make code more concise and readable.
+------------------------------
+ Q- Find first non repeated character in a string using java8
+ ans- 
+ str.chars().mapToObj(x -> (char) x)
+                .collect(
+                        Collectors.groupingBy(Function.identity(),
+                                LinkedHashMap::new,
+                                Collectors.counting()
+                        ))
+                .entrySet().stream()
+                .filter(object -> object.getValue() == 1)
+                .limit(1)
+                .forEach(System.out::println);
+------------------------------
+ Q- Find duplicate elements in a list of integer 
+ ans- 
+ HashSet<Integer> integerHashSet = new HashSet<>();
+ integerList.stream().filter(element -> !(integerHashSet.add(element))).forEach(System.out::println);
+------------------------------
+ Q- Find max in a list of integer
+ ans- 
+ integerList.stream().sorted(Comparator.reverseOrder()).limit(1).forEach(System.out::println);
+------------------------------
+ Q- Which db you used
+------------------------------
+ Q- How to annotate table in MongoDB 
+ ans- 
+ @Document
+------------------------------
+ Q- Diff b/w primary and composite key
+ ans- 
+ A primary key is a single column in a database table that uniquely identifies each row. 
+ In JPA, you can annotate entity classes with @Entity to map them to database tables and use @Id to define primary keys.
+
+ A composite key is a combination of two or more columns to form a primary key for a table.
+ Composite keys are used when no single column can uniquely identify a row, but a combination of columns can.
+ For composite primary keys, you can use @EmbeddedId and @Embeddable
+------------------------------
+ Q- And how to write composite keys
+ ans- 
+ 1. we have to create a separate Embeddable class which consists of two or more columns that wll be combined to create composite primary  key
+ @Embeddable
+ public class EmployeeId implements Serializable {
+    private Long employeeId;
+    private Long companyId;
+
+    // Constructors, getters, setters, equals, hashCode methods
+ } 
+
+ 2. Then use this Embeddable class in our Entity class to represent the composite key by @EmbeddedId
+ @Entity
+ public class Employee {
+    @EmbeddedId
+    private EmployeeId id;
+
+    private String employeeName;
+    // Other fields and methods
+ }
+------------------------------
+}
+
+--------------------------------------------------------------------------
+
+Volkswagen Company (2nd Round){
+
+ Q- Questions revolving around DI, ioc.
+ -------------------
+ Q- What do you know about java8 features
+ -------------------
+ Q- Changes in jvm with heap and metaspace in java8 
+ ans-
+ In Java 8, the Java Virtual Machine (JVM) introduced several changes. 
+ 
+ PermGen Replaced by Metaspace:  PermGen was a fixed-size memory area that stored class metadata, such as class names, method names, and field names and String Pool was stored in PermGen. 
+ Metaspace, on the other hand, is a dynamic memory area, It grows or shrinks based on the amount of loaded class metadata. This change eliminates the risk of OutOfMemoryError exceptions that could occur when PermGen became full.
+ PermGen was a part of Heap and Metaspace is not a part of Heap
+
+ String Pool Moved to Heap: String Pool (stores string literals for memory optimization) was relocated to the heap in Java 8. In previous versions of Java, the String Pool was stored in PermGen. However, this could lead to OutOfMemoryError exceptions if the String Pool became too large. By moving the String Pool to the heap, Java 8 avoids this problem and allows the String Pool to grow as needed.
+ -------------------
+ Q- Questions revolving around Optional class
+ -------------------
+ Q- Type of streams and difference 
+ ans-
+ 'A sequential stream' is executed in a single thread running on one CPU core. The elements in the stream are processed sequentially in a single pass by the stream operations that are executed in the same thread.
+
+ 'A parallel stream' is executed by different threads, running on multiple CPU cores in a computer. The stream elements are split into substreams that are processed by multiple instances of the stream pipeline being executed in multiple threads. The partial results from the processing of each substream are merged (or combined) into a final result.
+ Parallel streams utilize the fork/join framework for executing parallel tasks. This framework provides support for the thread management necessary to execute the substreams in parallel. The number of threads employed during parallel stream execution is dependent on the CPU cores in the computer.
+ -------------------
+ Q- How parallel stream works?
+ ans-
+ Parallel streams work by splitting the collection into smaller substreams, which are then processed in parallel by multiple threads.The results of the individual substreams are then combined to produce the final result.
+
+ Java uses trySplit() method (found in the Spliterator interface of Java used for dividing a collection of elements into smaller portions for parallel processing) to try splitting the collection in chunks that could be processed by different threads.In terms of the execution plan, it works very similarly, with one main difference. Instead of having one single set of linked operations, we have multiple copies of it and each thread applies these operations to the chunk of elements that its responsible for. Once completed all the results produced by each thread get merged to produce one single and final result
+ it internally uses Fork and Join pool to create and manage threads.Parallel streams create ForkJoinPool instance via static ForkJoinPool.commonPool() method.
+ -------------------
+ Q- What are intermediate and terminal operations 
+ ans-
+ Intermediate operations in Java streams are operations that transform a stream into another stream, while terminal operations are operations that produce a result or a side-effect.
+ filter - Stateless - Returns a new stream consisting of elements that match the given predicate.
+
+ All intermediate operations return Stream (can be chained), while terminal operations don't. Intermediate Operations are:
+
+filter(Predicate<T>)
+map(Function<T>)
+flatMap(Function<T>)
+sorted(Comparator<T>)
+peek(Consumer<T>)
+distinct()
+limit(long n)
+skip(long n)
+
+Terminal operations produces a non-stream (cannot be chained) result such as primitive value, a collection or no value at all.
+
+Terminal Operations are:
+forEach
+forEachOrdered
+toArray
+reduce
+collect
+min
+max
+count
+ -------------------
+ Q- Difference between map and flatmap
+ ans- 
+ Both map and flatmap methods are intermediate operations of Java 8 Stream API.
+
+ Map operation produces one output value for each input value, whereas the flatMap operation produces an arbitrary number (zero or more) values for each input value. also, Flatmap operation is the combination of Map and flat (flatten) operations.
+ 
+ map -
+ One-to-One Transformation: Applies a function to each element in a stream and produces one output element for each input element.
+ Maintains Structure: The output stream retains the same structure (number of elements) as the original stream.
+ Example: Doubling all numbers in a list: .map(n -> n * 2)
+
+ flatMap -
+ One-to-Many Transformation: Applies a function to each element in a stream, but the function can return zero, one, or more output elements.
+ Flattens Structure: The output stream can have a different structure(number of elements) compared to the original stream, as it merges the results from each element's transformation.
+ Example: Extracting characters from a list of words:
+ words = ("apple", "banana", "cherry"), words.stream() returns apple banana cherry
+ and flatmap is used to extract characters of (apple banana cherry) -a,p,p,l,e,b,a,n,a,n,a,c,h,e,r,r,y
+ words.stream().flatMap(word -> word.chars().mapToObj(c -> (char) c))
+
+ -------------------
+ Q- What is thread safety and synchronisation
+ ans-
+ Imagine a bakery counter with a single salesperson. Customers (threads) can line up and take turns being served (accessing shared resource). This ensures each customer gets the correct order (data consistency).
+ -------------------
+ Q- Comparable and comparator difference 
+ -------------------
+ Q- Any java library where comparator is used
+ ans- Collections
+ -------------------
+ Q- Which db used
+ -------------------
+ Q- Can we use two db together And how
+ ans-
+ Yes, we can use multiple DataSource in a single Spring Boot Application.
+ for each DataSource We should create few things, 
+ 1. Add DB properties such as url,password, driver etc for each db 
+  eg-> for db1: spring.db1.datasource.url=.. || for db2: spring.db2.datasource.url=..
+  by default the property is spring.datasource.url provided by spring in DataSourceProperties class. Now since we are using Multiple db now , therefore for each db (db1, db2), we have to enter their respective properties in yaml. 
+  as you can see we cannot map our yaml props to our manual DataSource Objects. To resolve this issue check 2nd Point.
+ 2. Config class should be created for each DataSource (Db1Config ,Db2Config)
+  a) inside the configuration class three things should be created because previously Springboot will Autowire them, such as DataSource, EntityManager and TransactionManager. But now since we have multiple Data Source, Sring boot will not be able to configure these.
+  
+  @Bean
+  @ConfigurationProperties(prefix="spring.db1.datasource") // this will map to yaml props
+  public DataSource dataSource(){
+        return DataSourceBuilder.create().url().password().build();
+  }
+
+  @Bean
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource){
+       return builder.dataSource(dataSource).package("enter model Package").build();
+  }
+
+  @Bean
+  public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
+        return new JpaTransactionManager(emf);
+  }
+ 3. create the above for each DataSource and annotate the Config class with
+  @Configuration , @EnableJpaRepositories(basepackages-{mention the repo Package for this DataSource})
+
+ -------------------
+ Q- What is jpa/mongo repositiory,difference b/w it and CrudRepository and questions like custom queries, provided methods
+ ans-
+ Spring Data JPA is used to develop Persistence layer in the application providing ready made methods to perform CRUD operation in DB tables.
+ JpaRepository(I) = CrudRepository(I) + PagingAndSortingRepository(I)(Pagination Methods + Sorting Methods)
+
+ custom queries can be created using @Query annotation on the given method.
+ -------------------
+ Q- how to optimise db queries 
+ -------------------
+ Q- When we have two jpa and mongo how to identify which db used in service (hint: qualifier)
+ -------------------
+ Q- Difference between path variable query param (req param)
+ -------------------
+ Q- Diff between post and put
+ ans-
+ Put method is idempotent. So if you send retry a request multiple times, that should be equivalent to a single request modification.
+ eg - if I hit a put req 10 times at one time, then the response will be same as it is a single request
+ in practice, always use PUT for UPDATE operations. Example: PUT /article/{article-id}
+
+ POST is NOT idempotent. So if you retry the request N times, you will end up having N resources with N different URIs created on the server. Always use POST for CREATE operations. Example:  POST /articles
+ -------------------
+ Q- Can we save using put
+ ans-
+ yes
+ -------------------
+ Q- Update using post
+ ans-
+ yes, we can. '*We can choose any Http method to do anything we want, but we should follow Http Protocols*'
+ -------------------
+ Q- Solid principles
+ -------------------
+ Q- What do you know about spring data rest ?
+ ans-
+ Spring Data REST is a valuable tool for developers who want to quickly and efficiently build RESTful APIs for their Spring Data JPA applications.
+ -------------------
+ Q- Scenario based questions-
+
+ 1. Employee with id and name, what if I store this in hash set , then count of Employee objects.
+ ans-
+ 'HashSet', relies on hashCode() and equals() to ensure uniqueness, So if we do not Override equals() and hashCode() to ensure proper comparison and uniqueness based on id and name.Then the default implementations from the Object class will be used.
+ Which checks for reference equality, meaning two objects are considered equal only if they are the exact same instance(reference comparison). This can lead to unexpected behavior when you expect the set to handle duplicates based on id and name.
+ example : 
+ employees.add(new Employee(1, "Alice"));
+ employees.add(new Employee(2, "Bob"));
+ employees.add(new Employee(3, "Charlie"));
+ employees.add(new Employee(2, "Bob")); // Duplicate based on id and name
+
+ O/P:-Number of employees: 4
+ Employee{id=1, name='Alice'}
+ Employee{id=2, name='Bob'}
+ Employee{id=3, name='Charlie'}
+ Employee{id=2, name='Bob'} even though new Employee(2, "Bob") is added twice, the HashSet will treat them as distinct objects because they are different instances and the equals() and hashCode() methods are not overridden.
+
+ 2. If we want to sort based on name what to do.
+ ans-
+ we can sort either using Comparable or Comparator
+ employees.stream().sorted(Comparator.comparing(Employee::getName))
+
+ 3. If we want a collection for sorting and unique,which collection to choose
+ ans-
+ If you need a collection that ensures both sorting and uniqueness, you should use a TreeSet. The TreeSet class in Java implements the SortedSet interface, which means it stores elements in a sorted order, and it also ensures that all elements are unique.
+
+ 
+ 4. Parent thread and child thread is there . If child thread wants to run and I closed parent thread, can we run child thread.
+ ans-
+ All Threads are 'unrelated', there are no parent and child threads. So once the 'parent' thread kicks off 'child1' and 'child2', then the three threads are independent. They can end in any order and they don't affect the running of other threads. Which means 'parent' can die before 'child1' and 'child2'.
+
+ There are some modifications to this. For example, if 'parent' is the last non-daemon thread running (and thus 'child1' and child2' threads are daemon threads), then when 'parent' dies, the JVM starts to shutdown, so the 'child' threads would also die.
+ -------------------
+ Q- Executor service
+ -------------------
+ Q- Concurrent hashmap and hashmap diff
+ -------------------
+ Q- does hashmap accept null keys  and what will happen if we save null as key 10 times.
+ ans-
+ Yes,it will update the first index with given values.
+ -------------------
+ Q- does concurrent hashmap accept null keys 
+ ans-
+ ConcurrentHashMap: Doesn't allow null keys or values.
+ HashMap: Allows for one null key and multiple null values.
+ -------------------
+ Q- More questions on concurrent hashmap and concurrency 
+ -------------------
+ Q- What is concurrent modification exception 
+ ans-
+ ConcurrentModificationException is a runtime exception that occurs when you try to alter the structure of the collection during iteration, causing the iterator to become confused.
+ 1. The most common scenario is when you use a for loop or an iterator (iterator(), forEach()) to iterate over a collection and simultaneously modify the collection within the loop. This can cause the iterator to miss elements or throw the ConcurrentModificationException.
+ 2. If multiple threads are iterating over the same collection and one thread modifies it while another iterates, it can also lead to this exception.
+ -------------------
+ Q- What do you mean by  thread safety with examples 
+ -------------------
+ Q- Microservices
+ -------------------
+ Q- How many services are being used
+ -------------------
+ Q- What to do when 3rd party service is returning error(fallback)
+ -------------------
+ Q- What to do when 3rd party service is dead(fallback)
+  ans-
+  Fallback Mechanism: Provide a fallback response or an alternative mechanism when the service is unavailable.
+  Circuit Breaker: Use a circuit breaker pattern to avoid overwhelming the service and to fail fast.
+#   @CircuitBreaker(name = "myService", fallbackMethod = "fallback") using Resilience4j   
+  
+  Retry Mechanism: Implement a retry mechanism to attempt the request a few times before giving up.
+#   @Retryable(
+#         value = { RestClientException.class },
+#         maxAttempts = 3,
+#         backoff = @Backoff(delay = 2000))
+ -------------------
+ Q- Api gateway and more microservices questions based on design.
+ -------------------
+ Q- How do you deploy
+ -------------------
+ Q- Have you written a Docker file
+ -------------------
+ Q- questions related to Spring security
+ -------------------
+ Q- authentication and authorization meaning and difference
+ -------------------
+ Q- emplpyee(id,firstName,salary,age) , sort emp based on firstname and return id
+ ans -
+ List<Employee> list
+ list.stream().sorted((prev,curr)->prev.firstName.compareTo(curr.firstName)).map(obj->obj.id).forEach(System.out::print);
+ 
+ -------------------
+ Q- [5,4,0,3,2,0,1,7,0] shift all zero to right side and order maintained for non zero elements
+ ans-
+ while(i<arr.length){
+	if(arr[i]!=0){
+	   i++;
+	}
+	swap(arr[i],arr[i+1]);}
+ -------------------
+
+}
+
+--------------------------------------------------------------
+
+CitiusTech Company (1st Round){
+
+ Q- Http Methods and how many type of methods are there
+ -------------------
+ Q- Can we delete or update using Post Method
+ -------------------
+ Q- Component service controller repo annotations and can you interchange them
+ ans-
+ controller annotation - It’s used to mark a class as a web request handler.
+ Switch can be possible for @Service and @Repository Annotation. But it is not recommended. 
+ -------------------
+ Q- can you interchange conroller and service
+ ans- 
+ We cannot switch conroller annotation with any other like @Service or @Repository. 
+ -------------------
+ Q- Find First non repeated character from String
+ -------------------
+ Q- You have been given an Employee Table, write a query such that you view EmpName and ManagerName in view :
+ EmpID, EmpName, DeptName, ManagerID
+ 1      Hitesh     AV        3
+ 2      Ramesh   DV      1
+ 3      Jitesh       NV      NULL
+ EmpName MangerName
+ 
+ response-
+ Hitesh         Jitesh
+ Ramesh       Hitesh
+ Jitesh           Null
+
+ ans- {SELECT e1.EmpName AS EmpName, e2.EmpName AS ManagerName
+        FROM Employee e1
+        LEFT JOIN Employee e2 ON e1.ManagerID = e2.EmpID;}
+ -------------------
+ Q- microservices Question
+ -------------------
+ Q- circuit breaker
+ -------------------
+ Q- @PostConstruct
+ -------------------
+ Q- If your service is making too many calls to the db , how would you optimize it. HINT- Entity manger
+ ans-{
+        If your service is making too many calls to the database and you need to optimize it, there are several strategies you can consider:
+        
+        Batching Queries: Instead of making individual queries for each request, try to batch multiple requests into a single query. This reduces the overhead of establishing connections and executing queries multiple times. we can use entity manager
+        
+        Caching: Implement caching mechanisms to store frequently accessed data in memory or a distributed cache. This can help reduce the need to query the database repeatedly for the same data.
+        
+        Optimize Queries: Review your SQL queries to ensure they are efficient. Use appropriate indexes, avoid unnecessary calculations or data transformations, and optimize query execution plans.
+        
+        Data Denormalization: Consider denormalizing your database schema by duplicating certain data across tables to avoid joins in frequently accessed queries. This can improve query performance at the cost of increased storage space and potential data inconsistency.
+        
+        Use Stored Procedures: Predefine frequently used queries as stored procedures in the database. This can reduce the overhead of query parsing and execution on the database server.
+        
+        Connection Pooling: Use connection pooling to reuse existing database connections instead of creating new ones for each request. This reduces the overhead of establishing connections and improves performance. Hikari
+        
+        Vertical Scaling: If your database server is under heavy load, consider upgrading its hardware resources such as CPU, memory, or storage to handle increased traffic.
+        
+        Horizontal Scaling: If vertical scaling is not sufficient, consider horizontal scaling by distributing your database across multiple servers or using sharding techniques to partition data.
+       }
+ -------------------
+ 
+}
+
+-----------------------------------------------------------------------
+
+CitiusTech Company (Manager Round){
+ 
+ Q- Project exp -
+ ans- 
+ I have been working at TCS for 3.3 years, during which I have contributed to three projects. My most recent project involved developing a feature service for a legacy system called TRIMS. The main objective of this service was to automate the previously manual processes of beneficiary identification and policy implementation.
+
+ The technology stack for this project included Java 8, Spring Boot 2.7.x, RestTemplate for microservice communication, JUnit and Mockito for unit testing, JaCoCo for code coverage, and SonarLint for code analysis. For deployment, we utilized OpenShift and Jenkins, and for manual deployments, we used UDeploy.
+
+ In addition to this, I was also involved in a non-billable project at the request of my manager, where I leveraged my expertise in JavaScript and React to work as a React developer.
+ --------------
+ Q- Which sdlc used 
+ ans- agile 
+ --------------
+ Q- Which tool used
+ ans- Jira 
+ --------------
+ Q-Any problems with Wfo or location 
+ ---------------
+ Q- Did you do Unit testing and if you did then how much percentage.
+ ---------------
+ Q- Microservices questions 
+ --------------
+ Q- Disadvantage 
+ --------------
+ Q- Disadvantage in terms of deployment 
+ --------------
+ Q- Why are u switching
+ --------------
+ Q- Changes in java version apart from 8
+ --------------
+ Q- Why resign without offer in such a bad time
+ --------------
+ Q- Whether Np is negotiable 
+ --------------
+ Q-Any expertise in devops like docker or k8s
+ ---------------
+
+}
+
+--------------------------------------------------------------------
+
+HCL tech Company (1st Round){
+
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+
+}
+
+----------------------------------------------------------------------
+
+Infy (1st Round){
+
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+ Q- 
+ ------------
+ Q-
+ ------------
+}
+
+-----------------------------------------------------------------------
+
+Kpmg (1st Round){
+
+ Q-  
+ ------------
+ Q-
+ ------------
+ Q-  
+ ------------
+ Q-
+ ------------
+ Q-  
+ ------------
+ Q-
+ ------------
+ Q-  
+ ------------
+ Q-
+ ------------
+ Q-  
+ ------------
+ Q-
+ ------------
+ Q-  
+ ------------
+ Q-
+ ------------
+ Q-  
+ ------------
+ Q-
+ ------------
+}
+

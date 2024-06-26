@@ -285,7 +285,7 @@ Arrays
      # Second Largest Element in an Array 
 
         * traverse over the array, any number that is closest to the largest number is the number that was there before the new larger value is assigned to the max variable. therefore before adding the new larger value take the value that is to be removed and store in second largest.
-        for example we are iterating an array [1234] around last iteration largest varibale will store 3 inside but when the condition -> arr[i] > large is satisfied , 4 will be added to it. therefore before "large = arr[i]" do this -> " second_large = large "
+        for example we are iterating an array [1234] around last iteration largest variable will store 3 inside but when the condition -> arr[i] > large is satisfied , 4 will be added to it. therefore before "large = arr[i]" do this -> " second_large = large "
         
         second condition is when we have such an array -> 23915 , In this case we can see that 5 will come at the last iteration , so if we only use the first condition then we will not satisfy it and we will not get the correct second_large value.
         "arr[i] > second_large && arr[i] != large" this should be your second condition where it checks if the current value is gt second_large if true then check if thet value is large value or not, if satisfied then second_large = arr[i]. 0(n).
