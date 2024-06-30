@@ -2,13 +2,14 @@ DSA
 
 2 Pointer technique
 
+
 https://www.geeksforgeeks.org/two-pointers-technique
 
 https://algodaily.com/lessons/using-the-two-pointer-technique/java
 
 -------------------------------------------------------------------------------
 
-Bit Manipulation 
+1. Bit Manipulation 
 
   1. Basics of Bits 
 
@@ -173,17 +174,17 @@ Bit Manipulation
 
 ======================================================================================================
 
-Sorting 
+2. Sorting 
 
   # if you increasing or decreasing in powers of 2 , it will be log N to base 2
     64 (N) -> 32 (N/2) -> 16 (N/4) -> 8 (N/8) -> 4 (N/16) -> 2 (N/32) -> 1 (N/64)
     64 is 2 ^6, log 8 base 2 gives 3, meaning how many times base should be multiplied with itself so that we get 8
 
-  # If algo gives different Time Complexity for differnt inputs then it is input dependant(Bubble)
+  # If algo gives different Time Complexity for different inputs then it is input dependant(Bubble)
     eg- best case -O(n) , worst case 0(n^2)
 
-  # If algo does not give different Time Complexity for differnt inputs then it is input independent(Selection, Merge )
-    eg- best case -O(n^2) , worst case 0(n^2)
+  # If algo does not give different Time Complexity for different inputs then it is input independent(Selection, Merge )
+    eg- best case : O(n^2) , worst case : 0(n^2)
 
   ---------------------------------------
 
@@ -191,7 +192,7 @@ Sorting
 
         # Select a minimum value and swap with index whose value is less than the mnimumm
         # Left side is sorted with each iteration. 
-        # elements are scanned and put to theor correct position at once, their posi will not change again
+        # elements are scanned and put to their correct position at once, their posi will not change again
 
         # Unstable sort because if duplicate values are there in the array to be sorted, then the index of the
           first duplicate value will increase/change to more than the second duplicate value
@@ -272,7 +273,7 @@ Sorting
 
 ======================================================================================================
 
-Arrays
+3. Arrays
 
     Easy :
      
@@ -284,11 +285,13 @@ Arrays
 
      # Second Largest Element in an Array 
 
-        * traverse over the array, any number that is closest to the largest number is the number that was there before the new larger value is assigned to the max variable. therefore before adding the new larger value take the value that is to be removed and store in second largest.
-        for example we are iterating an array [1234] around last iteration largest variable will store 3 inside but when the condition -> arr[i] > large is satisfied , 4 will be added to it. therefore before "large = arr[i]" do this -> " second_large = large "
+        * traverse over the array, any number that is closest to the largest number is the number that was there before the new larger value is assigned to the max variable. 
+        Therefore before adding the new larger value take the previous value that will be removed and store it in second largest.
+        for example we are iterating an array [1234] around last iteration largest variable will store 3 inside it but when the condition -> arr[i] > large is satisfied , 4 will be added to it. therefore before "large = arr[i]" do this -> " second_large = large "
         
         second condition is when we have such an array -> 23915 , In this case we can see that 5 will come at the last iteration , so if we only use the first condition then we will not satisfy it and we will not get the correct second_large value.
-        "arr[i] > second_large && arr[i] != large" this should be your second condition where it checks if the current value is gt second_large if true then check if thet value is large value or not, if satisfied then second_large = arr[i]. 0(n).
+        "arr[i] > second_large && arr[i] != large" this should be your second condition where it checks if the current value is gt second_large, if true then check if thet value is equal to large value or not, if satisfied then second_large = arr[i]. 
+        Time Complexity : 0(n)
 
       --------------------------
 
@@ -315,7 +318,7 @@ Arrays
 
         we will compare the two pointers -> " arr[duplicatePointer] != arr[nonDuplicatePointer] "
 
-        if condition is not true, duplicatePointer will increment through loop thereby signifying that the preceding vlaues are duplicate
+        if condition is not true, duplicatePointer will increment through loop thereby signifying that the preceding values are duplicate
 
         * if condition is false it means we are at an index where we have found a non duplicate value. so we will swap this element.
         but nonDuplicatePointer is still at 0th index, where should we store the latest non duplicate value ?
@@ -349,7 +352,7 @@ Arrays
             time complexity of this approach is 0(n) but space complexity is 0(n)
 
         * Second aproach improves the space complexity to 0(1) 
-        we an see an amazing pattern here. If we reverse the two parts and then reverse the whole array, we get our desired result
+        we can see an amazing pattern here. If we reverse the two parts and then reverse the whole array, we get our desired result
         1,2,3,4,5,6,7-> 12 and 34567 , lets rev both these two parts of the given array, 21 and 76543
         now lets see how they will look in array 2,1,7,6,5,4,3 
         lets reverse the whole array now 2,1,7,6,5,4,3 ->3,4,5,6,7,1,2 . we got the desired result.
@@ -365,16 +368,30 @@ Arrays
 
      # Move all Zeros to the end of the array : <<<<< Input: 1 ,0 ,2 ,3 ,0 ,4 ,0 ,1 Output: 1 ,2 ,3 ,4 ,1 ,0 ,0 ,0 >>>>>>>
 
-        * Move all non zero values to the start. 
+        * First Approach :
+         
+         Move all non zero values to the start. 
 
          we will use 2 Pointer slow and fast approach. 
-         wherein first pointer i, which will be used to traverse the elements of the array and the second pointer j will store the index of FIRST ZERO ELEMENT. So we will assume that there is no zero element in the array therefore j=-1 at the start.
+         wherein first pointer i, which will be used to traverse the elements of the array and the second pointer j will store the index of 'FIRST ZERO ELEMENT'. So we will assume that there is no zero element in the array therefore j=-1 at the start.
 
          we will traverse the array non stop exceptat the condition that the element at ith index is found to be non zero , so we will shhift that non zero element to the start.
 
-         while traversing the array if this condition -> "if(arr[i]!=0)" i.e. element is non zero is satisfied then we will swap j and i index but before that we will increment j Pointer. 
+         while traversing the array if this condition -> "if(arr[i]!=0)" i.e. element is non zero is satisfied then we will swap j and i index but before that we will increment j Pointer.  0(n) 
 
-        * 0(n) 
+        * Second Approach :
+         a) First find the index of 'FIRST ZERO ELEMENT', since as of now we dont know the index/position of firstZero, therefore we will assign '-1'to it -> "firstZero = -1" assuming that there is no zero number in the array.
+         Now, we can find the index of 'FIRST ZERO ELEMENT' by traversing over the array and checking this condition -> 
+         "if (arr[i] == 0)" , whenever this condition satisfies we will get index of 'FIRST ZERO ELEMENT' (firstZero = i) and break from loop.
+
+         b) The algo we are using here is that, now we know the index of firstZero variable. Therefore the left of the index of firstZero variable is ordered as per requirement, so we will traverse the array post firstZero index -> "i = firstZero + 1"
+         and check if the element is non zero or not -> "(arr[i] != 0)", if the element is non zero then we will swap the non-zero value with the index of firstZero and after swapping increment firstZero position.
+         if the value is zero then do nothing and iterate the array as our requirement is to move non-zero values to left side.
+         0(n)
+
+
+
+
 
       ------------------------------------------------------------
 
@@ -385,6 +402,9 @@ Arrays
       ------------------------------------------------------------
 
      # Union of Two Sorted Arrays : <<<<< Input: n = 5,m = 5. arr1[] = {1,2,3,4,5}  arr2[] = {2,3,4,4,5}    Output: {1,2,3,4,5} >>>>>
+
+        * With Time complexity of 0(n) and space complexity of 0(n) we can solve this -
+         By creating a tempArray and saving all non zero values in it and fill rest positions with zero.
 
         * First approach will be to use HashMap
          we will traverse both the array and store the elements as key and the count of that element as value inside HashMap
